@@ -16,6 +16,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({@required AuthRepo authRepo})
       : _authRepo = authRepo,
         super(AuthUnknownState()) {
+    //for listening continues change of user
     _userSubscription = _authRepo.user.listen(
       (user) => add(
         AuthUserChangedEvent(user: user),
@@ -49,5 +50,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         : AuthUnauthenticatedState(
             status: AuthStatus.unauthenticated,
           );
+    // if (event is AuthAuthenticatedState) {
+    //   yield AuthLoadingState();
+    //   try {
+    //     event.user != null
+    //         ? AuthAuthenticatedState(user: event.user)
+    //         : AuthUnauthenticatedState(
+    //             status: AuthStatus.authenticated,
+    //           );
+    //   } catch (err) {
+    //     print("error");
+    //   }
+    // }
   }
 }

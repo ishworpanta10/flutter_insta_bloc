@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
 
 class HomePage extends StatelessWidget {
   //for routing
@@ -22,8 +24,18 @@ class HomePage extends StatelessWidget {
       body: SafeArea(
         child: Container(
           padding: defaultPadding,
-          child: Center(
-            child: Text("Template Page test 1"),
+          child: Column(
+            children: [
+              Center(
+                child: Text("Template Page test 1"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  RepositoryProvider.of<AuthRepo>(context).logOut();
+                },
+                child: Text("LogOut"),
+              )
+            ],
           ),
         ),
       ),

@@ -38,6 +38,9 @@ dependencies:
   timeago: ^3.0.2
   uuid: 3.0.4
 
+#  for notification in screen
+  bot_toast: ^4.0.1
+
 
 
 dev_dependencies:
@@ -50,9 +53,10 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+#    - assets/images/
+    - assets/images/auth/
+
 
   # fonts:
   #   - family: Schyler
