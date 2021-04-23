@@ -1,5 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_insta_clone/assets/assets.dart';
 import 'package:flutter_insta_clone/blocs/auth_bloc/auth_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_insta_clone/constants/const_size_boxes.dart';
 import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
 import 'package:flutter_insta_clone/screens/screens.dart';
 import 'package:flutter_insta_clone/styles/decorations/custom_decoration.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginScreen extends StatelessWidget {
   //for routing
@@ -54,26 +56,166 @@ class LoginScreen extends StatelessWidget {
           Navigator.pushNamed(context, HomePage.routeName);
         }
       },
-      child: Scaffold(
-        // backgroundColor: Colors.grey[50],
-        body: SafeArea(
-          child: Container(
-            padding: defaultPadding,
-            child: Form(
-              key: _formKey,
-              child: ListView(
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildLanguageDropDownBtn(context),
-                  sbH200,
-                  _buildInstaImg(),
-                  sbH40,
-                  _buildFormFields(context),
-                  sbH20,
-                  _buildLogInBtn(),
-                ],
+      child: WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          // backgroundColor: Colors.grey[50],
+          body: SafeArea(
+            child: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Container(
+                padding: defaultPadding,
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildLanguageDropDownBtn(context),
+                      sbH200,
+                      _buildInstaImg(),
+                      sbH40,
+                      _buildFormFields(context),
+                      sbH20,
+                      _buildLogInBtn(),
+                      sbH10,
+                      _buildForgetPasswordRichText(context),
+                      sbH10,
+                      _buildORDivider(context),
+                      sbH20,
+                      _buildContinueWithFacebook(context),
+                    ],
+                  ),
+                ),
               ),
             ),
+          ),
+          bottomSheet: _buildBottomSheetText(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContinueWithFacebook(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        print("Continue with facebook");
+      },
+      child: Container(
+        color: Colors.grey[50],
+        width: double.infinity,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 12.0,
+              child: Icon(
+                FontAwesomeIcons.facebookF,
+                size: 15.0,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                print("Continue with facebook");
+              },
+              style: ButtonStyle(
+                overlayColor: MaterialStateColor.resolveWith(
+                  (states) => Colors.grey[50],
+                ),
+              ),
+              child: Text(
+                'Continue as Ishwor Panta',
+                style: Theme.of(context).textTheme.subtitle2.copyWith(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildORDivider(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Divider(
+            thickness: 1.6,
+          ),
+        ),
+        SizedBox(
+          width: 6.0,
+        ),
+        Text(
+          "OR",
+          style: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).textTheme.subtitle2.color.withOpacity(0.5)),
+        ),
+        SizedBox(
+          width: 6.0,
+        ),
+        Expanded(
+          child: Divider(
+            thickness: 1.6,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildForgetPasswordRichText(BuildContext context) {
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        text: "Forgotten your login details? ",
+        style: Theme.of(context).textTheme.caption,
+        children: [
+          TextSpan(
+            text: "Get help with logging in.",
+            style: Theme.of(context).textTheme.caption.copyWith(
+                  color: Theme.of(context).textTheme.subtitle2.color,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomSheetText(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, SignUpScreen.routeName);
+      },
+      child: Material(
+        elevation: 10.0,
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            vertical: 15.0,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: 'Don\'t have an account? ',
+                  style: Theme.of(context).textTheme.caption,
+                  children: [
+                    TextSpan(
+                      text: "Sign up.",
+                      style: Theme.of(context).textTheme.caption.copyWith(
+                            fontSize: 14.0,
+                            color: Theme.of(context).textTheme.subtitle2.color,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

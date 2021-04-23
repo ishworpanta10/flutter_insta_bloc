@@ -19,6 +19,9 @@ class CustomRoute {
       case LoginScreen.routeName:
         return LoginScreen.route();
 
+      case SignUpScreen.routeName:
+        return SignUpScreen.route();
+
       case HomePage.routeName:
         return HomePage.route();
 

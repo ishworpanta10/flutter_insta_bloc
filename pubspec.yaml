@@ -1,74 +1,37 @@
+---
 name: flutter_insta_clone
 description: A new Flutter project.
-
-publish_to: 'none'
-
-
+publish_to: none
 version: 1.0.0+1
-
 environment:
-  sdk: ">=2.7.0 <3.0.0"
-
+  sdk: '>=2.7.0 <3.0.0'
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.2
-
-  #  for transforming enum to string
   enum_to_string: ^2.0.1
   meta: ^1.3.0
-  #  for caching image
   cached_network_image: ^3.0.0
-  #  for Firesbase
   cloud_firestore: ^1.0.6
   firebase_core: ^1.0.4
   firebase_analytics: ^8.0.1
   firebase_auth: ^1.1.1
   firebase_storage: ^8.0.4
-  #  for BLOC
   flutter_bloc: ^7.0.0
   equatable: ^2.0.0
-  #  for images
   image_cropper: ^1.4.0
   image_picker: ^0.7.4
-
-#  for time uid
   intl: ^0.17.0
   timeago: ^3.0.2
   uuid: 3.0.4
-
-#  for notification in screen
   bot_toast: ^4.0.1
-
+  font_awesome_flutter: ^9.0.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-
 flutter:
-
   uses-material-design: true
-
-  # To add assets to your application, add an assets section, like this:
   assets:
-#    - assets/images/
-    - assets/images/auth/
-
-
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+  - assets/images/auth/
