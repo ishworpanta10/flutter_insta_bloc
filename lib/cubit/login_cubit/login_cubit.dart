@@ -29,7 +29,7 @@ class LoginCubit extends Cubit<LoginState> {
   void loginWithCredential() async {
     //making sure our login with cred not fired when our status is currently submitting
     //and validate form
-    if (state.status == LoginStatus.progress || state.isFormValid) return;
+    if (state.status == LoginStatus.progress || !state.isFormValid) return;
     //initially loading state
     emit(state.copyWith(status: LoginStatus.progress));
     try {

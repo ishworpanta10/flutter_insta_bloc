@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_insta_clone/assets/assets.dart';
-import 'package:flutter_insta_clone/blocs/auth_bloc/auth_bloc.dart';
 import 'package:flutter_insta_clone/blocs/basic_ui_bloc/basic_ui_blocs_export.dart';
 import 'package:flutter_insta_clone/blocs/basic_ui_bloc/email_change_bloc.dart';
 import 'package:flutter_insta_clone/blocs/basic_ui_bloc/languageChangingBloc.dart';
 import 'package:flutter_insta_clone/constants/const_size_boxes.dart';
+import 'package:flutter_insta_clone/cubit/login_cubit/login_cubit.dart';
 import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
 import 'package:flutter_insta_clone/screens/screens.dart';
 import 'package:flutter_insta_clone/styles/decorations/custom_decoration.dart';
@@ -21,7 +21,12 @@ class LoginScreen extends StatelessWidget {
     return PageRouteBuilder(
       settings: RouteSettings(name: routeName),
       transitionDuration: const Duration(seconds: 0),
-      pageBuilder: (_, __, ___) => LoginScreen(),
+      pageBuilder: (context, __, ___) => BlocProvider<LoginCubit>(
+        create: (context) => LoginCubit(
+          authRepo: context.read<AuthRepo>(),
+        ),
+        child: LoginScreen(),
+      ),
     );
   }
 
@@ -36,63 +41,62 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     BlocProvider.of<LanguageChangingBloc>(context).add(languageList[0]);
     final EdgeInsets defaultPadding = EdgeInsets.symmetric(horizontal: 20.0);
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, authState) {
-        if (authState is AuthLoadingState) {
-          Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (authState is AuthUnauthenticatedState) {
-          print("unauth");
-          BotToast.showText(
-            text: "Unauntenticated",
-          );
-          Navigator.pushNamed(context, LoginScreen.routeName);
-        } else if (authState is AuthAuthenticatedState) {
-          print("auth");
-          BotToast.showText(
-            text: "Authenticated Success",
-          );
-          Navigator.pushNamed(context, HomePage.routeName);
-        }
+
+    return BlocConsumer<LoginCubit, LoginState>(
+      listener: (context, state) {
+        if (state.status == LoginStatus.error) {
+          BotToast.showText(text: state.failure.message);
+
+          BotToast.closeAllLoading();
+        } else if (state.status == LoginStatus.success) {
+          BotToast.showText(text: "Login Success");
+
+          BotToast.closeAllLoading();
+
+          Navigator.pushReplacementNamed(context, HomePage.routeName);
+        } else if (state.status == LoginStatus.progress) {
+          BotToast.showLoading();
+        } else if (state.status == LoginStatus.initial) {}
       },
-      child: WillPopScope(
-        onWillPop: () async => false,
-        child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          // backgroundColor: Colors.grey[50],
-          body: SafeArea(
-            child: GestureDetector(
-              onTap: () => FocusScope.of(context).unfocus(),
-              child: Container(
-                padding: defaultPadding,
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildLanguageDropDownBtn(context),
-                      sbH200,
-                      _buildInstaImg(),
-                      sbH40,
-                      _buildFormFields(context),
-                      sbH20,
-                      _buildLogInBtn(),
-                      sbH10,
-                      _buildForgetPasswordRichText(context),
-                      sbH10,
-                      _buildORDivider(context),
-                      sbH20,
-                      _buildContinueWithFacebook(context),
-                    ],
+      builder: (context, state) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            // backgroundColor: Colors.grey[50],
+            body: SafeArea(
+              child: GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: Container(
+                  padding: defaultPadding,
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildLanguageDropDownBtn(context),
+                        sbH200,
+                        _buildInstaImg(),
+                        sbH40,
+                        _buildFormFields(context),
+                        sbH20,
+                        _buildLogInBtn(context, state.status == LoginStatus.progress),
+                        sbH10,
+                        _buildForgetPasswordRichText(context),
+                        sbH10,
+                        _buildORDivider(context),
+                        sbH20,
+                        _buildContinueWithFacebook(context),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
+            bottomSheet: _buildBottomSheetText(context),
           ),
-          bottomSheet: _buildBottomSheetText(context),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -224,7 +228,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLogInBtn() {
+  Widget _buildLogInBtn(BuildContext context, bool isSubmitting) {
     return BlocBuilder<EmailChangeBloc, bool>(
       builder: (context, emailState) {
         return BlocBuilder<PasswordChangeBloc, bool>(
@@ -245,16 +249,23 @@ class LoginScreen extends StatelessWidget {
                 onPressed: !(emailState && passwordState)
                     ? null
                     : () {
-                        if (_formKey.currentState.validate()) {
-                          // _formKey.currentState.save();
-                          print("Email :" + _usernameTextEditingController.text);
-                          print("Password :" + _passwordTextEditingController.text);
-                          RepositoryProvider.of<AuthRepo>(context).logInWithEmailAndPassword(
-                            email: _usernameTextEditingController.text,
-                            password: _passwordTextEditingController.text,
-                          );
+                        if (_formKey.currentState.validate() && !isSubmitting) {
+                          context.read<LoginCubit>().loginWithCredential();
                         }
                       },
+                // onPressed: !(emailState && passwordState)
+                //     ? null
+                //     : () {
+                //         if (_formKey.currentState.validate()) {
+                //           // _formKey.currentState.save();
+                //           print("Email :" + _usernameTextEditingController.text);
+                //           print("Password :" + _passwordTextEditingController.text);
+                //           RepositoryProvider.of<AuthRepo>(context).logInWithEmailAndPassword(
+                //             email: _usernameTextEditingController.text,
+                //             password: _passwordTextEditingController.text,
+                //           );
+                //         }
+                //       },
               ),
             );
           },
@@ -282,6 +293,7 @@ class LoginScreen extends StatelessWidget {
             ),
             onChanged: (email) {
               BlocProvider.of<EmailChangeBloc>(context).add(email);
+              context.read<LoginCubit>().emailChanged(email);
             },
           ),
           sbH20,
@@ -311,6 +323,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 onChanged: (password) {
                   BlocProvider.of<PasswordChangeBloc>(context).add(password);
+                  context.read<LoginCubit>().passwordChanged(password);
                 },
               );
             },

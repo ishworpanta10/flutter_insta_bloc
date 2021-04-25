@@ -17,25 +17,32 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final EdgeInsets defaultPadding = EdgeInsets.symmetric(horizontal: 20.0);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("title"),
-      ),
-      body: SafeArea(
-        child: Container(
-          padding: defaultPadding,
-          child: Column(
-            children: [
-              Center(
-                child: Text("Template Page test 1"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  RepositoryProvider.of<AuthRepo>(context).logOut();
-                },
-                child: Text("LogOut"),
-              )
-            ],
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("title"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {},
+          ),
+        ),
+        body: SafeArea(
+          child: Container(
+            padding: defaultPadding,
+            child: Column(
+              children: [
+                Center(
+                  child: Text("Template Page test 1"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    RepositoryProvider.of<AuthRepo>(context).logOut();
+                  },
+                  child: Text("LogOut"),
+                )
+              ],
+            ),
           ),
         ),
       ),
