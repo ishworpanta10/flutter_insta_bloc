@@ -5,7 +5,7 @@ class Failure extends Equatable {
   final String code;
 
   //if no code and message is passed default is empty string;
-  Failure({this.message = "", this.code = ""});
+  const Failure({this.message = "", this.code = ""});
 
   @override
   bool get stringify => true;

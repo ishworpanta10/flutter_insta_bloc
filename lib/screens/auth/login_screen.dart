@@ -150,7 +150,9 @@ class LoginScreen extends StatelessWidget {
         ),
         Text(
           "OR",
-          style: Theme.of(context).textTheme.subtitle2.copyWith(color: Theme.of(context).textTheme.subtitle2.color.withOpacity(0.5)),
+          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                color: Theme.of(context).textTheme.subtitle2.color.withOpacity(0.5),
+              ),
         ),
         SizedBox(
           width: 6.0,
