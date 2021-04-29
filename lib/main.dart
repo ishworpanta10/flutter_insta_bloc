@@ -38,6 +38,9 @@ class MyApp extends StatelessWidget {
             create: (context) => LanguageChangingBloc(),
           ),
           BlocProvider(
+            create: (context) => UserNameChangeBloc(),
+          ),
+          BlocProvider(
             create: (context) => EmailChangeBloc(),
           ),
           BlocProvider(

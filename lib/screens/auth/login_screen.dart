@@ -43,51 +43,53 @@ class LoginScreen extends StatelessWidget {
     final EdgeInsets defaultPadding = EdgeInsets.symmetric(horizontal: 20.0);
 
     return BlocConsumer<LoginCubit, LoginState>(
-      listener: (context, state) {
-        if (state.status == LoginStatus.error) {
-          BotToast.showText(text: state.failure.message);
-
+      listener: (context, loginState) {
+        if (loginState.status == LoginStatus.error) {
           BotToast.closeAllLoading();
-        } else if (state.status == LoginStatus.success) {
+          BotToast.showText(text: loginState.failure.message);
+        } else if (loginState.status == LoginStatus.success) {
+          BotToast.closeAllLoading();
           BotToast.showText(text: "Login Success");
-
-          BotToast.closeAllLoading();
-
           Navigator.pushReplacementNamed(context, HomePage.routeName);
-        } else if (state.status == LoginStatus.progress) {
+        } else if (loginState.status == LoginStatus.progress) {
           BotToast.showLoading();
-        } else if (state.status == LoginStatus.initial) {}
+        } else if (loginState.status == LoginStatus.initial) {}
       },
-      builder: (context, state) {
+      builder: (context, loginState) {
         return WillPopScope(
           onWillPop: () async => false,
           child: Scaffold(
             resizeToAvoidBottomInset: true,
             // backgroundColor: Colors.grey[50],
-            body: SafeArea(
-              child: GestureDetector(
-                onTap: () => FocusScope.of(context).unfocus(),
-                child: Container(
-                  padding: defaultPadding,
-                  child: Form(
-                    key: _formKey,
-                    child: ListView(
-                      // crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildLanguageDropDownBtn(context),
-                        sbH200,
-                        _buildInstaImg(),
-                        sbH40,
-                        _buildFormFields(context),
-                        sbH20,
-                        _buildLogInBtn(context, state.status == LoginStatus.progress),
-                        sbH10,
-                        _buildForgetPasswordRichText(context),
-                        sbH10,
-                        _buildORDivider(context),
-                        sbH20,
-                        _buildContinueWithFacebook(context),
-                      ],
+            body: WillPopScope(
+              onWillPop: () async {
+                return await _resetAllBloc(context);
+              },
+              child: SafeArea(
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: Container(
+                    padding: defaultPadding,
+                    child: Form(
+                      key: _formKey,
+                      child: ListView(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLanguageDropDownBtn(context),
+                          sbH200,
+                          _buildInstaImg(),
+                          sbH40,
+                          _buildFormFields(context),
+                          sbH20,
+                          _buildLogInBtn(context, loginState.status == LoginStatus.progress),
+                          sbH10,
+                          _buildForgetPasswordRichText(context),
+                          sbH10,
+                          _buildORDivider(context),
+                          sbH20,
+                          _buildContinueWithFacebook(context),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -98,6 +100,13 @@ class LoginScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  _resetAllBloc(BuildContext context) {
+    BlocProvider.of<LanguageChangingBloc>(context).add(null);
+    BlocProvider.of<EmailChangeBloc>(context).add(null);
+    BlocProvider.of<PasswordChangeBloc>(context).add(null);
+    BlocProvider.of<PasswordShowHideToggleBtn>(context).add(true);
   }
 
   Widget _buildContinueWithFacebook(BuildContext context) {
@@ -192,6 +201,7 @@ class LoginScreen extends StatelessWidget {
   Widget _buildBottomSheetText(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        _resetAllBloc(context);
         Navigator.pushNamed(context, SignUpScreen.routeName);
       },
       child: Material(

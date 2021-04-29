@@ -33,3 +33,18 @@ class PasswordChangeBloc extends Bloc<String, bool> {
     }
   }
 }
+
+class UserNameChangeBloc extends Bloc<String, bool> {
+  UserNameChangeBloc() : super(false);
+
+  @override
+  Stream<bool> mapEventToState(String event) async* {
+    if (event == null) {
+      yield false;
+    } else if (event.isEmpty) {
+      yield false;
+    } else {
+      yield true;
+    }
+  }
+}
