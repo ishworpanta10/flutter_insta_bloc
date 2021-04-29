@@ -6,6 +6,7 @@ import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
 
 part 'login_state.dart';
 
+/// from tutorial
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepo _authRepo;
   LoginCubit({@required AuthRepo authRepo})

@@ -8,6 +8,8 @@ import 'package:flutter_insta_clone/cubit/signup_cubit/signup_cubit.dart';
 import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
 import 'package:flutter_insta_clone/screens/home/homepage.dart';
 import 'package:flutter_insta_clone/styles/decorations/custom_decoration.dart';
+import 'package:flutter_insta_clone/widgets/error_dialog.dart';
+import 'package:flutter_insta_clone/widgets/loading_dialog.dart';
 
 class SignUpScreen extends StatelessWidget {
   static const String routeName = "/signup";
@@ -42,15 +44,35 @@ class SignUpScreen extends StatelessWidget {
     return BlocConsumer<SignupCubit, SignupState>(
       listener: (context, signupState) {
         if (signupState.status == SignupStatus.loading) {
-          return BotToast.showLoading();
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return LoadingDialog(
+                loadingMessage: "signing up, please wait ....",
+              );
+            },
+          );
+          // BotToast.showLoading();
         } else if (signupState.status == SignupStatus.failure) {
+          //closing the loading dialog
+          Navigator.of(context, rootNavigator: true).pop();
           BotToast.closeAllLoading();
-          return BotToast.showText(text: "Error Signing up : ${signupState.failure.message}");
+          BotToast.showText(text: "Error Signing up : ${signupState.failure.message}");
+          showDialog(
+              context: context,
+              builder: (context) {
+                return ErrorDialog(
+                  title: "Error on signing up",
+                  message: signupState.failure.message,
+                );
+              });
         } else if (signupState.status == SignupStatus.success) {
-          Navigator.pushReplacementNamed(context, HomePage.routeName);
           BotToast.closeAllLoading();
+          Navigator.pushReplacementNamed(context, HomePage.routeName);
           BotToast.showText(text: "Signup Success");
-        } else if (signupState.status == SignupStatus.initial) {}
+        }
+        // else if (signupState.status == SignupStatus.initial) {}
       },
       builder: (context, signupState) {
         return Scaffold(
@@ -89,36 +111,39 @@ class SignUpScreen extends StatelessWidget {
                 return FractionallySizedBox(
                   widthFactor: 1,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      onPrimary: Colors.white,
-                      onSurface: !(emailState && passwordState && userNamestate) ? Colors.blue : null,
-                      padding: EdgeInsets.symmetric(vertical: 14.0),
-                    ),
-                    // style: ButtonStyle(),
-                    child: Text(
-                      "Sign Up",
-                    ),
-                    onPressed: !(emailState && passwordState && userNamestate)
-                        ? null
-                        : _handleSignUp(
-                            context,
-                            isSubmitting,
-                          ),
-                    // onPressed: !(emailState && passwordState)
-                    //     ? null
-                    //     : () {
-                    //         if (_formKey.currentState.validate()) {
-                    //           // _formKey.currentState.save();
-                    //           print("Email :" + _usernameTextEditingController.text);
-                    //           print("Password :" + _passwordTextEditingController.text);
-                    //           RepositoryProvider.of<AuthRepo>(context).logInWithEmailAndPassword(
-                    //             email: _usernameTextEditingController.text,
-                    //             password: _passwordTextEditingController.text,
-                    //           );
-                    //         }
-                    //       },
-                  ),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue,
+                        onPrimary: Colors.white,
+                        onSurface: !(emailState && passwordState && userNamestate) ? Colors.blue : null,
+                        padding: EdgeInsets.symmetric(vertical: 14.0),
+                      ),
+                      // style: ButtonStyle(),
+                      child: Text(
+                        "Sign Up",
+                      ),
+                      onPressed: !(emailState && passwordState && userNamestate)
+                          ? null
+                          : () {
+                              if (_formKey.currentState.validate() && !isSubmitting) {
+                                context.read<SignupCubit>().signUpWithEmailAndPassword();
+                              }
+                            }
+
+                      // onPressed: !(emailState && passwordState)
+                      //     ? null
+                      //     : () {
+                      //         if (_formKey.currentState.validate()) {
+                      //           // _formKey.currentState.save();
+                      //           print("Email :" + _usernameTextEditingController.text);
+                      //           print("Password :" + _passwordTextEditingController.text);
+                      //           RepositoryProvider.of<AuthRepo>(context).logInWithEmailAndPassword(
+                      //             email: _usernameTextEditingController.text,
+                      //             password: _passwordTextEditingController.text,
+                      //           );
+                      //         }
+                      //       },
+
+                      ),
                 );
               },
             );
@@ -128,13 +153,14 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  _handleSignUp(BuildContext context, bool isSubmitting) {
-    if (_formKey.currentState.validate() && !isSubmitting) {
-      context.read<SignupCubit>().signUpWithEmailAndPassword();
-    }
-  }
+  // _handleSignUp(BuildContext context, bool isSubmitting) {
+  //   if (_formKey.currentState.validate() && !isSubmitting) {
+  //     context.read<SignupCubit>().signUpWithEmailAndPassword();
+  //   }
+  // }
 
   Widget _buildFormFields(BuildContext context) {
+    final node = FocusScope.of(context);
     return Form(
       key: _formKey,
       child: Container(
@@ -144,7 +170,7 @@ class SignUpScreen extends StatelessWidget {
             TextFormField(
               controller: _usernameEditingController,
               validator: (value) {
-                if (value == null || value.length < 3 || value.trim().isNotEmpty) {
+                if (value == null || value.length < 3 || value.trim().isEmpty) {
                   return "Invalid username";
                 } else
                   return null;
@@ -157,6 +183,7 @@ class SignUpScreen extends StatelessWidget {
                 BlocProvider.of<UserNameChangeBloc>(context).add(username);
                 BlocProvider.of<SignupCubit>(context).usernameChanged(username);
               },
+              onEditingComplete: () => node.nextFocus(),
             ),
             sbH20,
             TextFormField(
@@ -175,6 +202,7 @@ class SignUpScreen extends StatelessWidget {
                 BlocProvider.of<EmailChangeBloc>(context).add(email);
                 context.read<SignupCubit>().emailChanged(email);
               },
+              onEditingComplete: () => node.nextFocus(),
             ),
             sbH20,
             BlocBuilder<PasswordShowHideToggleBtn, bool>(
@@ -205,6 +233,7 @@ class SignUpScreen extends StatelessWidget {
                     BlocProvider.of<PasswordChangeBloc>(context).add(password);
                     BlocProvider.of<SignupCubit>(context).passwordChanged(password);
                   },
+                  // onEditingComplete: () => node.unfocus(),
                 );
               },
             ),

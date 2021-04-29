@@ -11,6 +11,8 @@ import 'package:flutter_insta_clone/cubit/login_cubit/login_cubit.dart';
 import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
 import 'package:flutter_insta_clone/screens/screens.dart';
 import 'package:flutter_insta_clone/styles/decorations/custom_decoration.dart';
+import 'package:flutter_insta_clone/widgets/error_dialog.dart';
+import 'package:flutter_insta_clone/widgets/loading_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -45,14 +47,36 @@ class LoginScreen extends StatelessWidget {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, loginState) {
         if (loginState.status == LoginStatus.error) {
+          //closing the existing dialog if exits during loading
+          Navigator.of(context, rootNavigator: true).pop();
+
           BotToast.closeAllLoading();
           BotToast.showText(text: loginState.failure.message);
+          //showing the error dialog if error exists
+          showDialog(
+            context: context,
+            builder: (context) {
+              return ErrorDialog(
+                title: "Error signing in",
+                message: loginState.failure.message,
+              );
+            },
+          );
         } else if (loginState.status == LoginStatus.success) {
           BotToast.closeAllLoading();
           BotToast.showText(text: "Login Success");
           Navigator.pushReplacementNamed(context, HomePage.routeName);
         } else if (loginState.status == LoginStatus.progress) {
-          BotToast.showLoading();
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return LoadingDialog(
+                loadingMessage: "login in, please wait ....",
+              );
+            },
+          );
+          // BotToast.showLoading();
         } else if (loginState.status == LoginStatus.initial) {}
       },
       builder: (context, loginState) {
@@ -285,6 +309,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget _buildFormFields(BuildContext context) {
+    final node = FocusScope.of(context);
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,7 +317,7 @@ class LoginScreen extends StatelessWidget {
           TextFormField(
             controller: _usernameTextEditingController,
             validator: (value) {
-              if (value.isEmpty || value == null || value.length < 3) {
+              if (value.isEmpty || value == null || value.length < 3 || !value.contains("@")) {
                 return "Invalid username/email";
               } else
                 return null;
@@ -302,9 +327,12 @@ class LoginScreen extends StatelessWidget {
               hintStyle: Theme.of(context).textTheme.caption,
             ),
             onChanged: (email) {
+              //for making login btn clickable
               BlocProvider.of<EmailChangeBloc>(context).add(email);
+              //for taking the value of email field
               context.read<LoginCubit>().emailChanged(email);
             },
+            onEditingComplete: () => node.nextFocus(),
           ),
           sbH20,
           BlocBuilder<PasswordShowHideToggleBtn, bool>(
@@ -335,6 +363,7 @@ class LoginScreen extends StatelessWidget {
                   BlocProvider.of<PasswordChangeBloc>(context).add(password);
                   context.read<LoginCubit>().passwordChanged(password);
                 },
+                onEditingComplete: () => node.unfocus(),
               );
             },
           ),
