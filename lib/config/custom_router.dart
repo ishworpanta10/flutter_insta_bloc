@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_insta_clone/screens/home/navbar/navbar.dart';
 import 'package:flutter_insta_clone/screens/screens.dart';
 
 //Custom Route Setting
@@ -16,17 +17,20 @@ class CustomRoute {
       // case InitialRoutePage.routeName:
       //   return InitialRoutePage.route();
 
+      case SplashScreen.routeName:
+        return SplashScreen.route();
+
       case LoginScreen.routeName:
         return LoginScreen.route();
 
       case SignUpScreen.routeName:
         return SignUpScreen.route();
 
+      case NavBar.routeName:
+        return NavBar.route();
+
       case HomePage.routeName:
         return HomePage.route();
-
-      case SplashScreen.routeName:
-        return SplashScreen.route();
 
       default:
         return _errorRoute();

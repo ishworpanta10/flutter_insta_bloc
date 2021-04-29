@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
 
 class HomePage extends StatelessWidget {
   //for routing
@@ -20,30 +18,8 @@ class HomePage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("title"),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {},
-          ),
-        ),
-        body: SafeArea(
-          child: Container(
-            padding: defaultPadding,
-            child: Column(
-              children: [
-                Center(
-                  child: Text("Template Page test 1"),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    RepositoryProvider.of<AuthRepo>(context).logOut();
-                  },
-                  child: Text("LogOut"),
-                )
-              ],
-            ),
-          ),
+        body: Center(
+          child: Text("HomePage"),
         ),
       ),
     );
