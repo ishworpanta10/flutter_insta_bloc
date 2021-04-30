@@ -5,8 +5,7 @@ import 'package:flutter_insta_clone/screens/screens.dart';
 //Custom Route Setting
 class CustomRoute {
   static Route onGenerateRoute(RouteSettings settings) {
-    print(settings.name);
-
+    print(" Route : ${settings.name}");
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(
@@ -32,6 +31,15 @@ class CustomRoute {
       case HomePage.routeName:
         return HomePage.route();
 
+      default:
+        return _errorRoute();
+    }
+  }
+
+  static Route onGenerateNestedRoute(RouteSettings settings) {
+    print("Nested Route : ${settings.name} ");
+
+    switch (settings.name) {
       default:
         return _errorRoute();
     }
