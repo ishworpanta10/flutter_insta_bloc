@@ -22,11 +22,11 @@ class SplashScreen extends StatelessWidget {
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           // print(state);
-          if (state is AuthAuthenticatedState) {
+          if (state.status == AuthStatus.authenticated) {
             /// go to home screen
             // print("Authenticated");
             Navigator.of(context).pushNamed(NavBar.routeName);
-          } else if (state is AuthUnauthenticatedState) {
+          } else if (state.status == AuthStatus.unauthenticated) {
             /// go to login screen
             // print("UnAuthenticated");
             Navigator.pushNamed(context, LoginScreen.routeName);

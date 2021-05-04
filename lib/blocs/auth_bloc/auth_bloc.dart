@@ -15,7 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc({@required AuthRepo authRepo})
       : _authRepo = authRepo,
-        super(AuthUnknownState()) {
+        super(AuthState.unknown()) {
     //for listening continues change of user
     _userSubscription = _authRepo.user.listen(
       (user) => add(
@@ -44,12 +44,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Stream<AuthState> _mapAuthUserChangeToState(AuthUserChangedEvent event) async* {
     yield event.user != null
-        ? AuthAuthenticatedState(
+        ? AuthState.authenticated(
             user: event.user,
           )
-        : AuthUnauthenticatedState(
-            status: AuthStatus.unauthenticated,
-          );
+        : AuthState.unauthenticated();
     // if (event is AuthAuthenticatedState) {
     //   yield AuthLoadingState();
     //   try {
