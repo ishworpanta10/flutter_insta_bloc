@@ -14,7 +14,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final EdgeInsets defaultPadding = EdgeInsets.symmetric(horizontal: 20.0);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

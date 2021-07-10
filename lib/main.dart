@@ -65,8 +65,8 @@ class MyApp extends StatelessWidget {
           navigatorObservers: [
             BotToastNavigatorObserver(),
           ],
-          darkTheme: ThemeData.dark(),
-          themeMode: ThemeMode.system,
+          // darkTheme: ThemeData.dark(),
+          // themeMode: ThemeMode.system,
 
           theme: ThemeData(
             primarySwatch: Colors.blue,

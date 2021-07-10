@@ -37,7 +37,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     yield state.copyWith(status: ProfileStatus.loading);
     try {
       final user = await _userRepo.getUserWithId(userId: event.userId);
-      final currentUserId = await _authBloc.state.user.uid;
+      final currentUserId = _authBloc.state.user.uid;
       // ProfileLoadEvent is Fired from tab navigator with auth_uid
       //ans return userId to event
       final isCurrentUser = currentUserId == event.userId;
@@ -54,7 +54,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         failure: const Failure(message: "Unable to load this profile"),
       );
     } catch (e) {
-      print("Something Unknown Error: ${e}");
+      print("Something Unknown Error: $e");
       yield state.copyWith(
         status: ProfileStatus.failure,
         failure: const Failure(message: "Unable to load this profile"),
