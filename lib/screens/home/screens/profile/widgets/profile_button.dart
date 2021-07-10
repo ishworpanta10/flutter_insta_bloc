@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_insta_clone/screens/home/screens/profile/edit_profile.dart';
 
 class ProfileButton extends StatelessWidget {
   final bool isCurrentUser;
@@ -13,7 +14,10 @@ class ProfileButton extends StatelessWidget {
     return isCurrentUser
         ? TextButton(
             style: TextButton.styleFrom(backgroundColor: Colors.blue),
-            onPressed: () {},
+            onPressed: () => Navigator.of(context).pushNamed(
+              EditProfile.routeName,
+              arguments: EditProfileArgs(context: context),
+            ),
             child: const Text(
               'Edit Profile',
               style: const TextStyle(fontSize: 16, color: Colors.white),

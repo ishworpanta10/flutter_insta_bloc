@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_insta_clone/screens/home/screens/nav/navbar.dart';
+import 'package:flutter_insta_clone/screens/home/screens/profile/edit_profile.dart';
 import 'package:flutter_insta_clone/screens/screens.dart';
 
 //Custom Route Setting
@@ -40,6 +41,9 @@ class CustomRoute {
     print("Nested Route : ${settings.name} ");
 
     switch (settings.name) {
+      case EditProfile.routeName:
+        return EditProfile.route(args: settings.arguments);
+
       default:
         return _errorRoute();
     }

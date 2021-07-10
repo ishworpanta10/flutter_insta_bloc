@@ -14,7 +14,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
   final StorageRepo _storageRepo;
   final ProfileBloc _profileBloc;
   EditProfileCubit(
-      UserRepo userRepo, StorageRepo storageRepo, ProfileBloc profileBloc)
+      {UserRepo userRepo, StorageRepo storageRepo, ProfileBloc profileBloc})
       : _userRepo = userRepo,
         _storageRepo = storageRepo,
         _profileBloc = profileBloc,
