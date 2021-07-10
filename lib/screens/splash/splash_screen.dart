@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_insta_clone/blocs/auth_bloc/auth_bloc.dart';
 import 'package:flutter_insta_clone/screens/auth/login_screen.dart';
-import 'package:flutter_insta_clone/screens/home/navbar/navbar.dart';
+import 'package:flutter_insta_clone/screens/home/screens/nav/navbar.dart';
 
 class SplashScreen extends StatelessWidget {
   static const routeName = '/splash';

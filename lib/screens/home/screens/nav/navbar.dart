@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_insta_clone/cubit/bottom_nav_toggle_cubit/bottom_nav_toggle_cubit.dart';
 import 'package:flutter_insta_clone/enums/navbar_items.dart';
-import 'package:flutter_insta_clone/screens/home/navbar/bottom_nav_bar.dart';
-import 'package:flutter_insta_clone/screens/home/navbar/tab_navigator.dart';
+import 'package:flutter_insta_clone/screens/home/screens/nav/widgets/widget.dart';
 
 class NavBar extends StatelessWidget {
   static const String routeName = "/navbar";
@@ -65,7 +64,8 @@ class NavBar extends StatelessWidget {
               final selectedItem = BottomNavItem.values[index];
 
               //3. selecting the current updated tab
-              _selecteBottomNavItem(context, selectedItem, selectedItem == state.selectedItem);
+              _selecteBottomNavItem(
+                  context, selectedItem, selectedItem == state.selectedItem);
               //with bloc
               // BlocProvider.of<BottomNavBloc>(context).add(index);
             },
@@ -78,10 +78,13 @@ class NavBar extends StatelessWidget {
     );
   }
 
-  void _selecteBottomNavItem(BuildContext context, BottomNavItem selectedItem, bool isSameItem) {
+  void _selecteBottomNavItem(
+      BuildContext context, BottomNavItem selectedItem, bool isSameItem) {
     if (isSameItem) {
       //pop the screen to first of stack of same bottom nav tab
-      navigatorKeys[selectedItem].currentState.popUntil((route) => route.isFirst);
+      navigatorKeys[selectedItem]
+          .currentState
+          .popUntil((route) => route.isFirst);
     }
     context.read<BottomNavToggleCubit>().updateSelectedItem(selectedItem);
   }

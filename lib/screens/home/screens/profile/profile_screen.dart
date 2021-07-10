@@ -2,8 +2,9 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_insta_clone/blocs/blocs.dart';
-import 'package:flutter_insta_clone/screens/home/navbar/widgets/widgets.dart';
 import 'package:flutter_insta_clone/widgets/widgets.dart';
+
+import 'widgets/widgets.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override

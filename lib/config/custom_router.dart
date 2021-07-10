@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_insta_clone/screens/home/navbar/navbar.dart';
+import 'package:flutter_insta_clone/screens/home/screens/nav/navbar.dart';
 import 'package:flutter_insta_clone/screens/screens.dart';
 
 //Custom Route Setting

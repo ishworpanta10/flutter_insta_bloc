@@ -9,7 +9,7 @@ import 'package:flutter_insta_clone/blocs/basic_ui_bloc/languageChangingBloc.dar
 import 'package:flutter_insta_clone/constants/const_size_boxes.dart';
 import 'package:flutter_insta_clone/cubit/login_cubit/login_cubit.dart';
 import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
-import 'package:flutter_insta_clone/screens/home/navbar/navbar.dart';
+import 'package:flutter_insta_clone/screens/home/screens/nav/navbar.dart';
 import 'package:flutter_insta_clone/screens/screens.dart';
 import 'package:flutter_insta_clone/styles/decorations/custom_decoration.dart';
 import 'package:flutter_insta_clone/widgets/error_dialog.dart';

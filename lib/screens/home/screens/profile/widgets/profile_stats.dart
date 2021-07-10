@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_insta_clone/screens/home/navbar/widgets/widgets.dart';
+
+import 'widgets.dart';
 
 class ProfileStat extends StatelessWidget {
   final bool isCurrentUser;

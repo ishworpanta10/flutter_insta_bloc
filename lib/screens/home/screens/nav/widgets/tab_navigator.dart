@@ -4,7 +4,8 @@ import 'package:flutter_insta_clone/blocs/blocs.dart';
 import 'package:flutter_insta_clone/config/custom_router.dart';
 import 'package:flutter_insta_clone/enums/navbar_items.dart';
 import 'package:flutter_insta_clone/repositories/repositories.dart';
-import 'package:flutter_insta_clone/screens/home/navbar/screens/screens.dart';
+
+import '../../screens.dart';
 
 class TabNavigator extends StatelessWidget {
   static const String tabNavigatorRoot = "/";
