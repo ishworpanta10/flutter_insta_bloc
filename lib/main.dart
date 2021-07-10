@@ -34,6 +34,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider(
           create: (_) => AuthRepo(),
         ),
+        RepositoryProvider(
+          create: (_) => StorageRepo(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
