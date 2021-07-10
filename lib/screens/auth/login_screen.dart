@@ -9,6 +9,7 @@ import 'package:flutter_insta_clone/blocs/basic_ui_bloc/languageChangingBloc.dar
 import 'package:flutter_insta_clone/constants/const_size_boxes.dart';
 import 'package:flutter_insta_clone/cubit/login_cubit/login_cubit.dart';
 import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
+import 'package:flutter_insta_clone/screens/home/navbar/navbar.dart';
 import 'package:flutter_insta_clone/screens/screens.dart';
 import 'package:flutter_insta_clone/styles/decorations/custom_decoration.dart';
 import 'package:flutter_insta_clone/widgets/error_dialog.dart';
@@ -32,12 +33,19 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  final List<String> languageList = ["English (United Kingdom) ", "Espanol", "Hindi", "Deutsch"];
+  final List<String> languageList = [
+    "English (United Kingdom) ",
+    "Espanol",
+    "Hindi",
+    "Deutsch"
+  ];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _usernameTextEditingController = TextEditingController();
-  final TextEditingController _passwordTextEditingController = TextEditingController();
+  final TextEditingController _usernameTextEditingController =
+      TextEditingController();
+  final TextEditingController _passwordTextEditingController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +73,7 @@ class LoginScreen extends StatelessWidget {
         } else if (loginState.status == LoginStatus.success) {
           BotToast.closeAllLoading();
           BotToast.showText(text: "Login Success");
-          Navigator.pushReplacementNamed(context, HomePage.routeName);
+          Navigator.pushReplacementNamed(context, NavBar.routeName);
         } else if (loginState.status == LoginStatus.progress) {
           showDialog(
             context: context,
@@ -105,7 +113,8 @@ class LoginScreen extends StatelessWidget {
                           sbH40,
                           _buildFormFields(context),
                           sbH20,
-                          _buildLogInBtn(context, loginState.status == LoginStatus.progress),
+                          _buildLogInBtn(context,
+                              loginState.status == LoginStatus.progress),
                           sbH10,
                           _buildForgetPasswordRichText(context),
                           sbH10,
@@ -188,7 +197,11 @@ class LoginScreen extends StatelessWidget {
         Text(
           "OR",
           style: Theme.of(context).textTheme.subtitle2.copyWith(
-                color: Theme.of(context).textTheme.subtitle2.color.withOpacity(0.5),
+                color: Theme.of(context)
+                    .textTheme
+                    .subtitle2
+                    .color
+                    .withOpacity(0.5),
               ),
         ),
         SizedBox(
@@ -273,7 +286,8 @@ class LoginScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   primary: Colors.blue,
                   onPrimary: Colors.white,
-                  onSurface: !(emailState && passwordState) ? Colors.blue : null,
+                  onSurface:
+                      !(emailState && passwordState) ? Colors.blue : null,
                   padding: EdgeInsets.symmetric(vertical: 14.0),
                 ),
                 // style: ButtonStyle(),
@@ -317,7 +331,10 @@ class LoginScreen extends StatelessWidget {
           TextFormField(
             controller: _usernameTextEditingController,
             validator: (value) {
-              if (value.isEmpty || value == null || value.length < 3 || !value.contains("@")) {
+              if (value.isEmpty ||
+                  value == null ||
+                  value.length < 3 ||
+                  !value.contains("@")) {
                 return "Invalid username/email";
               } else
                 return null;
@@ -355,7 +372,8 @@ class LoginScreen extends StatelessWidget {
                       color: passwordState ? Colors.grey : null,
                     ),
                     onPressed: () {
-                      BlocProvider.of<PasswordShowHideToggleBtn>(context).add(!passwordState);
+                      BlocProvider.of<PasswordShowHideToggleBtn>(context)
+                          .add(!passwordState);
                     },
                   ),
                 ),

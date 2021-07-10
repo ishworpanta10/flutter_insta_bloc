@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_insta_clone/blocs/basic_ui_bloc/basic_ui_blocs_export.dart';
+import 'package:flutter_insta_clone/blocs/blocs.dart';
 import 'package:flutter_insta_clone/blocs/simple_bloc_observer.dart';
 import 'package:flutter_insta_clone/config/custom_router.dart';
 import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
+import 'package:flutter_insta_clone/repositories/repositories.dart';
 import 'package:flutter_insta_clone/screens/screens.dart';
 
 import 'blocs/auth_bloc/auth_bloc.dart';
@@ -27,8 +29,11 @@ class MyApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(
+          create: (_) => UserRepo(),
+        ),
+        RepositoryProvider(
           create: (_) => AuthRepo(),
-        )
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -38,19 +43,19 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider(
-            create: (context) => LanguageChangingBloc(),
+            create: (_) => LanguageChangingBloc(),
           ),
           BlocProvider(
-            create: (context) => UserNameChangeBloc(),
+            create: (_) => UserNameChangeBloc(),
           ),
           BlocProvider(
-            create: (context) => EmailChangeBloc(),
+            create: (_) => EmailChangeBloc(),
           ),
           BlocProvider(
-            create: (context) => PasswordChangeBloc(),
+            create: (_) => PasswordChangeBloc(),
           ),
           BlocProvider(
-            create: (context) => PasswordShowHideToggleBtn(),
+            create: (_) => PasswordShowHideToggleBtn(),
           ),
         ],
         child: MaterialApp(

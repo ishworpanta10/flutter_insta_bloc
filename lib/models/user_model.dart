@@ -20,6 +20,7 @@ class UserModel extends Equatable {
     this.bio,
   });
 
+  //if user model does not exist in firebase we return empty model
   static const empty = UserModel(
     id: '',
     username: '',
@@ -43,6 +44,7 @@ class UserModel extends Equatable {
     };
   }
 
+  //to fetch data from firebase
   factory UserModel.fromDocument(DocumentSnapshot doc) {
     if (doc == null) return null;
     final data = doc.data();
