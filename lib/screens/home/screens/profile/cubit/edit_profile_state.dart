@@ -1,17 +1,18 @@
 part of 'edit_profile_cubit.dart';
 
+//ignore: must_be_immutable
 class EditProfileState extends Equatable {
-  final File profileImage;
-  final String username;
-  final String bio;
-  final EditProfileStatus status;
-  final Failure failure;
+  File profileImage;
+  String username;
+  String bio;
+  EditProfileStatus status;
+  Failure failure;
 
   @override
   List<Object> get props => [profileImage, username, bio, status, failure];
 
   factory EditProfileState.initial() {
-    return const EditProfileState(
+    return EditProfileState(
       profileImage: null,
       username: '',
       bio: '',
@@ -20,7 +21,7 @@ class EditProfileState extends Equatable {
     );
   }
 
-  const EditProfileState({
+  EditProfileState({
     @required this.profileImage,
     @required this.username,
     @required this.bio,
