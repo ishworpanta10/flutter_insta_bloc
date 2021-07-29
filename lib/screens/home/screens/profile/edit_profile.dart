@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_insta_clone/blocs/blocs.dart';
+import 'package:flutter_insta_clone/helpers/helpers.dart';
 import 'package:flutter_insta_clone/models/models.dart';
 import 'package:flutter_insta_clone/repositories/repositories.dart';
 import 'package:flutter_insta_clone/screens/home/screens/profile/cubit/edit_profile_cubit.dart';
 import 'package:flutter_insta_clone/widgets/error_dialog.dart';
 import 'package:flutter_insta_clone/widgets/user_profile_image.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class EditProfileArgs {
   final BuildContext context;
@@ -136,8 +140,16 @@ class EditProfile extends StatelessWidget {
     );
   }
 
-  void _selectProfileImage(BuildContext context) {
-    //TODO:
+  void _selectProfileImage(BuildContext context) async {
+    // final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+    final pickedFile = await ImageHelper.pickImageFromGallery(
+      context: context,
+      cropStyle: CropStyle.circle,
+      title: "Profile Image",
+    );
+    if (pickedFile != null) {
+      context.read<EditProfileCubit>().profileImageChanged(File(pickedFile.path));
+    }
   }
 
   void _submitForm(BuildContext context, bool isSubmitting) {
