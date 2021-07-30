@@ -12,3 +12,21 @@ class ProfileLoadEvent extends ProfileEvent {
   @override
   List<Object> get props => [userId];
 }
+
+class ProfileToggleGridViewEvent extends ProfileEvent {
+  final bool isGridView;
+
+  ProfileToggleGridViewEvent({@required this.isGridView});
+
+  @override
+  List<Object> get props => [isGridView];
+}
+
+class ProfileUpdatePostsEvent extends ProfileEvent {
+  final List<PostModel> postList;
+
+  ProfileUpdatePostsEvent({@required this.postList});
+
+  @override
+  List<Object> get props => [postList];
+}

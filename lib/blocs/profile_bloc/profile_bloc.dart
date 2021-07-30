@@ -14,14 +14,24 @@ part 'profile_state.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final UserRepo _userRepo;
   final AuthBloc _authBloc;
+  //for posts
+  final PostRepository _postRepository;
+  StreamSubscription<List<Future<PostModel>>> _postsSubscription;
 
   /// we are using user repo and auth repo to compare currently login user and profile reviewing
   /// if both match we confirm we are looking to own profile
 
-  ProfileBloc({@required UserRepo userRepo, @required AuthBloc authBloc})
+  ProfileBloc({@required UserRepo userRepo, @required AuthBloc authBloc, @required PostRepository postRepository})
       : _authBloc = authBloc,
         _userRepo = userRepo,
+        _postRepository = postRepository,
         super(ProfileState.initial());
+
+  @override
+  Future<void> close() {
+    _postsSubscription?.cancel();
+    return super.close();
+  }
 
   @override
   Stream<ProfileState> mapEventToState(
@@ -29,19 +39,34 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async* {
     if (event is ProfileLoadEvent) {
       yield* _mapProfileLoadEventToState(event);
+    } else if (event is ProfileToggleGridViewEvent) {
+      yield* _mapProfileToggleGridViewEventToState(event);
+    } else if (event is ProfileUpdatePostsEvent) {
+      yield* _mapProfileUpdatePostsEventToState(event);
     }
   }
 
-  Stream<ProfileState> _mapProfileLoadEventToState(
-      ProfileLoadEvent event) async* {
-    yield state.copyWith(status: ProfileStatus.loading);
+  Stream<ProfileState> _mapProfileLoadEventToState(ProfileLoadEvent event) async* {
+    if (state.status == ProfileStatus.loaded) {
+      yield state.copyWith(status: ProfileStatus.loaded);
+    } else {
+      yield state.copyWith(status: ProfileStatus.loading);
+    }
+
     try {
       final user = await _userRepo.getUserWithId(userId: event.userId);
       final currentUserId = _authBloc.state.user.uid;
       // ProfileLoadEvent is Fired from tab navigator with auth_uid
       //ans return userId to event
       final isCurrentUser = currentUserId == event.userId;
-
+      // for posts
+      _postsSubscription?.cancel();
+      _postsSubscription = _postRepository.getUserPosts(userId: event.userId).listen((futurePostList) async {
+        final allPosts = await Future.wait(futurePostList);
+        add(
+          ProfileUpdatePostsEvent(postList: allPosts),
+        );
+      });
       yield state.copyWith(
         userModel: user,
         isCurrentUser: isCurrentUser,
@@ -60,5 +85,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         failure: const Failure(message: "Unable to load this profile"),
       );
     }
+  }
+
+  Stream<ProfileState> _mapProfileToggleGridViewEventToState(ProfileToggleGridViewEvent event) async* {
+    yield state.copyWith(isGridView: event.isGridView);
+  }
+
+  Stream<ProfileState> _mapProfileUpdatePostsEventToState(ProfileUpdatePostsEvent event) async* {
+    yield state.copyWith(posts: event.postList);
   }
 }
