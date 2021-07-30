@@ -7,10 +7,11 @@ import 'package:flutter_insta_clone/blocs/blocs.dart';
 import 'package:flutter_insta_clone/helpers/helpers.dart';
 import 'package:flutter_insta_clone/models/models.dart';
 import 'package:flutter_insta_clone/repositories/repositories.dart';
-import 'package:flutter_insta_clone/screens/home/screens/profile/cubit/edit_profile_cubit.dart';
 import 'package:flutter_insta_clone/widgets/error_dialog.dart';
 import 'package:flutter_insta_clone/widgets/user_profile_image.dart';
 import 'package:image_cropper/image_cropper.dart';
+
+import 'edit_profile_cubit/edit_profile_cubit.dart';
 
 class EditProfileArgs {
   final BuildContext context;
