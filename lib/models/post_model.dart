@@ -80,7 +80,7 @@ class PostModel extends Equatable {
           id: doc.id,
           caption: data["caption"] ?? "",
           imageUrl: data["imageUrl"] ?? "",
-          author: UserModel.fromDocument(doc),
+          author: UserModel.fromDocument(authorDoc),
           likes: (data["likes"] ?? 0).toInt(),
           dateTime: (data["dateTime"] as Timestamp)?.toDate(),
         );
