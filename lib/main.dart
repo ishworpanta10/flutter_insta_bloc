@@ -28,14 +28,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(
+        RepositoryProvider<UserRepo>(
           create: (_) => UserRepo(),
         ),
-        RepositoryProvider(
+        RepositoryProvider<AuthRepo>(
           create: (_) => AuthRepo(),
         ),
-        RepositoryProvider(
+        RepositoryProvider<StorageRepo>(
           create: (_) => StorageRepo(),
+        ),
+        RepositoryProvider<PostRepository>(
+          create: (_) => PostRepository(),
         ),
       ],
       child: MultiBlocProvider(

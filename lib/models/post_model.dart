@@ -54,12 +54,12 @@ class PostModel extends Equatable {
   List<Object> get props => [caption, imageUrl, author, likes, dateTime];
 
   Map<String, dynamic> toDocuments() {
-    final authorId = FirebaseFirestore.instance.collection(FirebaseCollectionConstants.userCollection).doc(author.id);
+    final authorDocsRef = FirebaseFirestore.instance.collection(FirebaseCollectionConstants.userCollection).doc(author.id);
     return {
-      'id': id,
+      // 'id': id,
       'caption': caption,
       'imageUrl': imageUrl,
-      'author': authorId,
+      'author': authorDocsRef,
       'likes': likes,
       'dateTime': Timestamp.fromDate(dateTime),
     };
