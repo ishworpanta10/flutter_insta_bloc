@@ -17,8 +17,8 @@ dependencies:
   firebase_analytics: ^8.0.1
   firebase_auth: ^1.1.1
   firebase_storage: ^8.0.4
-  flutter_bloc: ^7.0.0
-  equatable: ^2.0.0
+  flutter_bloc: ^7.1.0
+  equatable: ^2.0.3
   image_cropper: ^1.4.0
   image_picker: ^0.7.4
   intl: ^0.17.0

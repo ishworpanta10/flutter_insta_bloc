@@ -60,9 +60,9 @@ class UserRepo extends BaseUserRepo {
 
   @override
   Future<bool> isFollowing({@required String userId, @required String otherUserId}) async {
-    final followers = FirebaseCollectionConstants.followers;
+    // final followers = FirebaseCollectionConstants.followers;
     final following = FirebaseCollectionConstants.following;
-    final userFollowers = FirebaseCollectionConstants.userFollowers;
+    // final userFollowers = FirebaseCollectionConstants.userFollowers;
     final userFollowing = FirebaseCollectionConstants.userFollowing;
 
     /// is otherUser in user's userFollowing
