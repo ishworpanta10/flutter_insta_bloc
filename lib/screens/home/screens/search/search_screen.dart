@@ -41,7 +41,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             textInputAction: TextInputAction.search,
             textAlignVertical: TextAlignVertical.center,
-            onFieldSubmitted: (value) {
+            onChanged: (value) {
               if (value.trim().isNotEmpty) {
                 context.read<SearchCubit>().searchUser(query: value.trim());
               }

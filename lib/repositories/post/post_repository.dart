@@ -12,7 +12,7 @@ class PostRepository extends BasePostRepo {
 
   @override
   Future<void> createPost({@required PostModel postModel}) async {
-    final postCollection = FirebaseCollectionConstants.postCollection;
+    final postCollection = FirebaseCollectionConstants.post;
     await _firebaseFirestore.collection(postCollection).add(
           postModel.toDocuments(),
         );
@@ -20,8 +20,8 @@ class PostRepository extends BasePostRepo {
 
   @override
   Future<void> createComment({@required CommentModel commentModel}) async {
-    final commentCollection = FirebaseCollectionConstants.commentCollection;
-    final postCommentCollection = FirebaseCollectionConstants.postCommentsSubCollection;
+    final commentCollection = FirebaseCollectionConstants.comment;
+    final postCommentCollection = FirebaseCollectionConstants.postComments;
     await _firebaseFirestore.collection(commentCollection).doc(commentModel.postId).collection(postCommentCollection).add(
           commentModel.toDocuments(),
         );
@@ -29,8 +29,8 @@ class PostRepository extends BasePostRepo {
 
   @override
   Stream<List<Future<PostModel>>> getUserPosts({@required String userId}) {
-    final userCollection = FirebaseCollectionConstants.userCollection;
-    final postCollection = FirebaseCollectionConstants.postCollection;
+    final userCollection = FirebaseCollectionConstants.user;
+    final postCollection = FirebaseCollectionConstants.post;
     final authorRef = _firebaseFirestore.collection(userCollection).doc(userId);
     return _firebaseFirestore.collection(postCollection).where('author', isEqualTo: authorRef).orderBy("dateTime", descending: true).snapshots().map(
           (querySnap) => querySnap.docs
@@ -43,8 +43,8 @@ class PostRepository extends BasePostRepo {
 
   @override
   Stream<List<Future<CommentModel>>> getPostComment({@required String postId}) {
-    final commentCollection = FirebaseCollectionConstants.commentCollection;
-    final postCommentsSubCollection = FirebaseCollectionConstants.postCommentsSubCollection;
+    final commentCollection = FirebaseCollectionConstants.comment;
+    final postCommentsSubCollection = FirebaseCollectionConstants.postComments;
     return _firebaseFirestore.collection(commentCollection).doc(postId).collection(postCommentsSubCollection).orderBy("dateTime", descending: false).snapshots().map(
           (querySnap) => querySnap.docs
               .map(

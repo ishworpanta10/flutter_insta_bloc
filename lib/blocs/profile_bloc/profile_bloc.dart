@@ -43,6 +43,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       yield* _mapProfileToggleGridViewEventToState(event);
     } else if (event is ProfileUpdatePostsEvent) {
       yield* _mapProfileUpdatePostsEventToState(event);
+    } else if (event is ProfileFollowUserEvent) {
+      yield* _mapProfileFollowUserEventToState(event);
+    } else if (event is ProfileUnfollowUserEvent) {
+      yield* _mapProfileUnfollowUserEventToState(event);
     }
   }
 
@@ -59,6 +63,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       // ProfileLoadEvent is Fired from tab navigator with auth_uid
       //ans return userId to event
       final isCurrentUser = currentUserId == event.userId;
+      final isFollowing = await _userRepo.isFollowing(userId: _authBloc.state.user.uid, otherUserId: event.userId);
       // for posts
       _postsSubscription?.cancel();
       _postsSubscription = _postRepository.getUserPosts(userId: event.userId).listen((futurePostList) async {
@@ -70,6 +75,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       yield state.copyWith(
         userModel: user,
         isCurrentUser: isCurrentUser,
+        isFollowing: isFollowing,
         status: ProfileStatus.loaded,
       );
     } on FirebaseException catch (e) {
@@ -93,5 +99,35 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Stream<ProfileState> _mapProfileUpdatePostsEventToState(ProfileUpdatePostsEvent event) async* {
     yield state.copyWith(posts: event.postList);
+  }
+
+  Stream<ProfileState> _mapProfileFollowUserEventToState(ProfileFollowUserEvent event) async* {
+    try {
+      _userRepo.followUser(userId: _authBloc.state.user.uid, followUserId: state.userModel.id);
+      //this increment is not just for ui we use cloud function to update db
+      final updatedUser = state.userModel.copyWith(followers: state.userModel.followers + 1);
+      yield state.copyWith(userModel: updatedUser, isFollowing: true);
+    } on FirebaseException catch (e) {
+      print("Firebase Error: ${e.message}");
+      yield state.copyWith(status: ProfileStatus.failure, failure: Failure(message: e.message));
+    } catch (e) {
+      print("Something Unknown Error: $e");
+      yield state.copyWith(status: ProfileStatus.failure, failure: Failure(message: "something went wrong! Please try again "));
+    }
+  }
+
+  Stream<ProfileState> _mapProfileUnfollowUserEventToState(ProfileUnfollowUserEvent event) async* {
+    try {
+      _userRepo.unfollowUser(userId: _authBloc.state.user.uid, unfollowUserId: state.userModel.id);
+      //this increment is not just for ui we use cloud function to update db
+      final updatedUser = state.userModel.copyWith(followers: state.userModel.followers - 1);
+      yield state.copyWith(userModel: updatedUser, isFollowing: false);
+    } on FirebaseException catch (e) {
+      print("Firebase Error: ${e.message}");
+      yield state.copyWith(status: ProfileStatus.failure, failure: Failure(message: e.message));
+    } catch (e) {
+      print("Something Unknown Error: $e");
+      yield state.copyWith(status: ProfileStatus.failure, failure: Failure(message: "something went wrong! Please try again "));
+    }
   }
 }
