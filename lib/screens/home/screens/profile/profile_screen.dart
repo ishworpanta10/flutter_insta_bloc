@@ -3,12 +3,35 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_insta_clone/blocs/blocs.dart';
+import 'package:flutter_insta_clone/repositories/repositories.dart';
 import 'package:flutter_insta_clone/widgets/widgets.dart';
 
 import 'widgets/profile_stats.dart';
 import 'widgets/widgets.dart';
 
+class ProfileScreenArgs {
+  final String userId;
+  ProfileScreenArgs({@required this.userId});
+}
+
 class ProfileScreen extends StatefulWidget {
+  //for routing
+  static const String routeName = "/profile";
+
+  static Route route({@required ProfileScreenArgs args}) {
+    return MaterialPageRoute(
+      settings: RouteSettings(name: ProfileScreen.routeName),
+      builder: (context) => BlocProvider<ProfileBloc>(
+        create: (_) => ProfileBloc(
+          userRepo: context.read<UserRepo>(),
+          authBloc: context.read<AuthBloc>(),
+          postRepository: context.read<PostRepository>(),
+        )..add(ProfileLoadEvent(userId: args.userId)),
+        child: ProfileScreen(),
+      ),
+    );
+  }
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -162,9 +185,9 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             final post = profileState.posts[index];
-                            return GestureDetector(
-                              onTap: () {},
-                              child: Text(post.caption),
+                            return PostView(
+                              postModel: post,
+                              isLiked: true,
                             );
                           },
                           childCount: profileState.posts.length,
