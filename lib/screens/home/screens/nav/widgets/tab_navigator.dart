@@ -5,6 +5,7 @@ import 'package:flutter_insta_clone/config/custom_router.dart';
 import 'package:flutter_insta_clone/enums/navbar_items.dart';
 import 'package:flutter_insta_clone/repositories/repositories.dart';
 import 'package:flutter_insta_clone/screens/home/screens/create_post/create_post_cubit/create_post_cubit.dart';
+import 'package:flutter_insta_clone/screens/home/screens/search/search_cubit/search_cubit.dart';
 
 import '../../screens.dart';
 
@@ -46,7 +47,12 @@ class TabNavigator extends StatelessWidget {
         return FeedScreen();
 
       case BottomNavItem.search:
-        return SearchScreen();
+        return BlocProvider<SearchCubit>(
+          create: (context) => SearchCubit(
+            userRepo: context.read<UserRepo>(),
+          ),
+          child: SearchScreen(),
+        );
 
       case BottomNavItem.create:
         return BlocProvider<CreatePostCubit>(
