@@ -114,6 +114,83 @@ exports.onUnfollowUser = functions.firestore
     });
   });
 
+// for new post and adding those post to all user's usersFeed who follow that author
+
+const postDocumentPath = "/posts/{postId}";
+exports.onCreatePost = functions.firestore
+  .document(postDocumentPath)
+  // snapshots are the documents of post collection
+  .onCreate(async (snapshot, context) => {
+    // getting post id which is auto generated when creating post
+    const postId = context.params.postId;
+    // getting author id - (we have author filed of collection Refrence type in post field)
+    const authorRef = snapshot.get("author");
+    // we have author id as : users/authorId in author field of post collection doc
+    const authorId = authorRef.path.split("/")[1];
+
+    // add newly created post of author to feeds collection of all followers
+    const userFollowerRef = admin
+      .firestore()
+      .collection("followers")
+      .doc(authorId)
+      .collection("userFollowers");
+
+    // list of all followers of author
+    const userFollowerSnapshot = await userFollowerRef.get();
+
+    userFollowerSnapshot.forEach((followerDoc) => {
+      if (followerDoc.exists) {
+        // this copied new posts to followers userFeed collection
+        //snapshot.data() contain data of posts collection with post id which author create
+        admin
+          .firestore()
+          .collection("feeds")
+          .doc(followerDoc.id)
+          .collection("userFeed")
+          .doc(postId)
+          .set(snapshot.data());
+      }
+    });
+  });
+
+// for updating the post in userFeed of all followers when post update i.e like count increment or decrement
+exports.onUpdatePost = functions.firestore
+  .document(postDocumentPath)
+  .onUpdate(async (snapshot, context) => {
+    const postId = context.params.postId;
+
+    // getting author id
+    const authorRef = snapshot.after.get("author");
+    const authorId = authorRef.path.split("/")[1];
+
+    // update post data in each follower's feeds
+
+    const userFollowerRef = admin
+      .firestore()
+      .collection("followers")
+      .doc(authorId)
+      .collection("userFollowers");
+
+    const userFollowerSnapshot = await userFollowerRef.get();
+
+    // updated data snapshot of post
+    const updatedPostData = snapshot.after.data();
+
+    userFollowerSnapshot.forEach(async (followerDoc) => {
+      if (followerDoc.exists) {
+        const postRef = admin
+          .firestore()
+          .collection("feeds")
+          .doc(followerDoc.id)
+          .collection("userFeed");
+
+        const postDoc = await postRef.doc(postId).get();
+        if (postDoc.exists) {
+          postDoc.ref.update(updatedPostData);
+        }
+      }
+    });
+  });
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
