@@ -7,6 +7,5 @@ abstract class BasePostRepo {
   Stream<List<Future<PostModel>>> getUserPosts({String userId});
   Stream<List<Future<CommentModel>>> getPostComment({String postId});
 
-  Future<List<PostModel>> getUserFeed({String userId});
-
+  Future<List<PostModel>> getUserFeed({String userId, String lastPostId});
 }

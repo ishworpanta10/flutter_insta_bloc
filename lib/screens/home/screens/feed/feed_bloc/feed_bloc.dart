@@ -47,7 +47,20 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   }
 
   Stream<FeedState> mapPaginatingFeedEventToState(FeedPaginatePostsEvent event) async* {
-    yield (state.copyWith(postList: [], status: FeedStatus.loading));
-    //TODO:Paginating
+    yield (state.copyWith(status: FeedStatus.paginating));
+    try {
+      final lastPostId = state.postList.isNotEmpty ? state.postList.last.id : null;
+      final postListPaginated = await _postRepository.getUserFeed(userId: _authBloc.state.user.uid, lastPostId: lastPostId);
+      //now updated post = our old fetched post + recently fetched post with pagination;
+      final updatedPostList = List<PostModel>.from(state.postList)..addAll(postListPaginated);
+      emit(state.copyWith(postList: updatedPostList, status: FeedStatus.loaded));
+    } on FirebaseException catch (e) {
+      print("Firebase Error: ${e.message}");
+      yield (state.copyWith(failure: Failure(message: e.message), status: FeedStatus.error));
+    } catch (e) {
+      print("Something Unknown Error: $e");
+      yield (state.copyWith(failure: Failure(message: "unable to fetch feeds"), status: FeedStatus.error));
+      print("Something Unknown Error: $e");
+    }
   }
 }

@@ -57,12 +57,24 @@ class PostRepository extends BasePostRepo {
   }
 
   @override
-  Future<List<PostModel>> getUserFeed({@required String userId}) async {
+  Future<List<PostModel>> getUserFeed({@required String userId, String lastPostId}) async {
     final feeds = FirebaseConstants.feeds;
     final userFeed = FirebaseConstants.userFeed;
-    final postSnap = await _firebaseFirestore.collection(feeds).doc(userId).collection(userFeed).orderBy("dateTime", descending: true).get();
+    //paginating logic
+    QuerySnapshot postsSnap;
+    if (lastPostId == null) {
+      postsSnap = await _firebaseFirestore.collection(feeds).doc(userId).collection(userFeed).orderBy("dateTime", descending: true).limit(15).get();
+    } else {
+      final lastPostDoc = await _firebaseFirestore.collection(feeds).doc(userId).collection(userFeed).doc(lastPostId).get();
+      if (!lastPostDoc.exists) {
+        return [];
+      }
+      postsSnap = await _firebaseFirestore.collection(feeds).doc(userId).collection(userFeed).orderBy("dateTime", descending: true).startAfterDocument(lastPostDoc).limit(15).get();
+    }
+
+    // final postSnap = await _firebaseFirestore.collection(feeds).doc(userId).collection(userFeed).orderBy("dateTime", descending: true).get();
     //here if use does not use future.wait we get only List<Future<PostModel>>
-    final futurePostList = Future.wait(postSnap.docs.map((post) => PostModel.fromDocument(post)).toList());
+    final futurePostList = Future.wait(postsSnap.docs.map((post) => PostModel.fromDocument(post)).toList());
     return futurePostList;
   }
 }
