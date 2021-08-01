@@ -12,7 +12,7 @@ class PostRepository extends BasePostRepo {
 
   @override
   Future<void> createPost({@required PostModel postModel}) async {
-    final postCollection = FirebaseCollectionConstants.post;
+    final postCollection = FirebaseConstants.post;
     await _firebaseFirestore.collection(postCollection).add(
           postModel.toDocuments(),
         );
@@ -20,8 +20,8 @@ class PostRepository extends BasePostRepo {
 
   @override
   Future<void> createComment({@required CommentModel commentModel}) async {
-    final commentCollection = FirebaseCollectionConstants.comment;
-    final postCommentCollection = FirebaseCollectionConstants.postComments;
+    final commentCollection = FirebaseConstants.comment;
+    final postCommentCollection = FirebaseConstants.postComments;
     await _firebaseFirestore.collection(commentCollection).doc(commentModel.postId).collection(postCommentCollection).add(
           commentModel.toDocuments(),
         );
@@ -29,8 +29,8 @@ class PostRepository extends BasePostRepo {
 
   @override
   Stream<List<Future<PostModel>>> getUserPosts({@required String userId}) {
-    final userCollection = FirebaseCollectionConstants.user;
-    final postCollection = FirebaseCollectionConstants.post;
+    final userCollection = FirebaseConstants.user;
+    final postCollection = FirebaseConstants.post;
     final authorRef = _firebaseFirestore.collection(userCollection).doc(userId);
     return _firebaseFirestore.collection(postCollection).where('author', isEqualTo: authorRef).orderBy("dateTime", descending: true).snapshots().map(
           (querySnap) => querySnap.docs
@@ -43,8 +43,8 @@ class PostRepository extends BasePostRepo {
 
   @override
   Stream<List<Future<CommentModel>>> getPostComment({@required String postId}) {
-    final commentCollection = FirebaseCollectionConstants.comment;
-    final postCommentsSubCollection = FirebaseCollectionConstants.postComments;
+    final commentCollection = FirebaseConstants.comment;
+    final postCommentsSubCollection = FirebaseConstants.postComments;
     return _firebaseFirestore.collection(commentCollection).doc(postId).collection(postCommentsSubCollection).orderBy("dateTime", descending: false).snapshots().map(
           (querySnap) => querySnap.docs
               .map(
@@ -54,5 +54,15 @@ class PostRepository extends BasePostRepo {
               )
               .toList(),
         );
+  }
+
+  @override
+  Future<List<PostModel>> getUserFeed({@required String userId}) async {
+    final feeds = FirebaseConstants.feeds;
+    final userFeed = FirebaseConstants.userFeed;
+    final postSnap = await _firebaseFirestore.collection(feeds).doc(userId).collection(userFeed).orderBy("dateTime", descending: true).get();
+    //here if use does not use future.wait we get only List<Future<PostModel>>
+    final futurePostList = Future.wait(postSnap.docs.map((post) => PostModel.fromDocument(post)).toList());
+    return futurePostList;
   }
 }
