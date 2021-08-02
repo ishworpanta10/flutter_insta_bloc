@@ -8,7 +8,7 @@ class NotificationRepo extends BaseNotificationRepo {
   final FirebaseFirestore _firebaseFirestore;
 
   NotificationRepo({
-    @required FirebaseFirestore firebaseFirestore,
+    FirebaseFirestore firebaseFirestore,
   }) : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
 
   @override
