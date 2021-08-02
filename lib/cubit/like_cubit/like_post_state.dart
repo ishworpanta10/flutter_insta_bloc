@@ -1,4 +1,4 @@
-part of 'like_cubit.dart';
+part of 'like_post_cubit.dart';
 
 class LikePostState extends Equatable {
   final Set<String> likedPostIds;
