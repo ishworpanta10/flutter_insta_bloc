@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_insta_clone/blocs/basic_ui_bloc/basic_ui_blocs_export.dart';
 import 'package:flutter_insta_clone/blocs/blocs.dart';
-import 'package:flutter_insta_clone/blocs/simple_bloc_observer.dart';
 import 'package:flutter_insta_clone/config/custom_router.dart';
+import 'package:flutter_insta_clone/cubit/like_cubit/like_post_cubit.dart';
 import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
 import 'package:flutter_insta_clone/repositories/repositories.dart';
 import 'package:flutter_insta_clone/screens/screens.dart';
 
 import 'blocs/auth_bloc/auth_bloc.dart';
 import 'blocs/basic_ui_bloc/password_change_bloc.dart';
+import 'blocs/simple_bloc_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +47,12 @@ class MyApp extends StatelessWidget {
           BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(
               authRepo: context.read<AuthRepo>(),
+            ),
+          ),
+          BlocProvider<LikePostCubit>(
+            create: (context) => LikePostCubit(
+              authBloc: context.read<AuthBloc>(),
+              postRepository: context.read<PostRepository>(),
             ),
           ),
           BlocProvider(

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_insta_clone/blocs/auth_bloc/auth_bloc.dart';
+import 'package:flutter_insta_clone/cubit/like_cubit/like_post_cubit.dart';
 import 'package:flutter_insta_clone/models/models.dart';
 import 'package:flutter_insta_clone/repositories/repositories.dart';
 
@@ -16,15 +17,22 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final AuthBloc _authBloc;
   //for posts
   final PostRepository _postRepository;
+  //for likes
+  final LikePostCubit _likePostCubit;
   StreamSubscription<List<Future<PostModel>>> _postsSubscription;
 
   /// we are using user repo and auth repo to compare currently login user and profile reviewing
   /// if both match we confirm we are looking to own profile
 
-  ProfileBloc({@required UserRepo userRepo, @required AuthBloc authBloc, @required PostRepository postRepository})
-      : _authBloc = authBloc,
+  ProfileBloc({
+    @required UserRepo userRepo,
+    @required AuthBloc authBloc,
+    @required PostRepository postRepository,
+    @required LikePostCubit likePostCubit,
+  })  : _authBloc = authBloc,
         _userRepo = userRepo,
         _postRepository = postRepository,
+        _likePostCubit = likePostCubit,
         super(ProfileState.initial());
 
   @override
@@ -72,6 +80,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           ProfileUpdatePostsEvent(postList: allPosts),
         );
       });
+
       yield state.copyWith(
         userModel: user,
         isCurrentUser: isCurrentUser,
@@ -99,6 +108,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Stream<ProfileState> _mapProfileUpdatePostsEventToState(ProfileUpdatePostsEvent event) async* {
     yield state.copyWith(posts: event.postList);
+    //for liked post
+    final likedPostIds = await _postRepository.getLikedPostIds(
+      userId: _authBloc.state.user.uid,
+      postModel: event.postList,
+    );
+    _likePostCubit.updateLikedPosts(postIds: likedPostIds);
   }
 
   Stream<ProfileState> _mapProfileFollowUserEventToState(ProfileFollowUserEvent event) async* {

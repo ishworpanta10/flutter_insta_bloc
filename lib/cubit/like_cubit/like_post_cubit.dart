@@ -15,6 +15,7 @@ class LikePostCubit extends Cubit<LikePostState> {
         _authBloc = authBloc,
         super(LikePostState.initial());
 
+  //we can use this method to fetch initial like post while loading initial feed
   void updateLikedPosts({@required Set<String> postIds}) {
     emit(state.copyWith(
       likedPostIds: Set<String>.from(state.likedPostIds)..addAll(postIds),

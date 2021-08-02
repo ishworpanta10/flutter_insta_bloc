@@ -8,8 +8,16 @@ import 'package:flutter_insta_clone/widgets/user_profile_image.dart';
 class PostView extends StatelessWidget {
   final PostModel postModel;
   final bool isLiked;
+  final VoidCallback onLike;
+  final bool recentlyLiked;
 
-  const PostView({Key key, @required this.isLiked, @required this.postModel}) : super(key: key);
+  const PostView({
+    Key key,
+    @required this.isLiked,
+    @required this.postModel,
+    @required this.onLike,
+    this.recentlyLiked = false,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final author = postModel.author;
@@ -38,9 +46,7 @@ class PostView extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onDoubleTap: () {
-            //TODO: like functionality
-          },
+          onDoubleTap: onLike,
           child: CachedNetworkImage(
             height: MediaQuery.of(context).size.height / 2.25,
             width: double.infinity,
@@ -51,8 +57,8 @@ class PostView extends StatelessWidget {
         Row(
           children: [
             IconButton(
-              onPressed: () {},
-              icon: isLiked ? Icon(Icons.favorite, color: Colors.red) : Icon(Icons.favorite_outline),
+              onPressed: onLike,
+              icon: isLiked ? const Icon(Icons.favorite, color: Colors.red) : const Icon(Icons.favorite_outline),
             ),
             IconButton(
               onPressed: () {},
@@ -67,7 +73,7 @@ class PostView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                '${postModel.likes} likes',
+                '${recentlyLiked ? postModel.likes + 1 : postModel.likes} ${postModel.likes <= 1 ? "like" : "likes"}',
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 4),
