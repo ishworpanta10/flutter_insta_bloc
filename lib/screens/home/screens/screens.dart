@@ -1,3 +1,4 @@
+export 'comment/comment.dart';
 export 'create_post/create_post_screen.dart';
 export 'feed/feed_screen.dart';
 export 'notification/notification_screen.dart';
