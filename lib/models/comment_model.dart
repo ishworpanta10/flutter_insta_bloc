@@ -49,7 +49,6 @@ class CommentModel extends Equatable {
   Map<String, dynamic> toDocuments() {
     final authorId = FirebaseFirestore.instance.collection(FirebaseConstants.users).doc(author.id);
     return {
-      'id': id,
       'postId': postId,
       'content': content,
       'author': authorId,

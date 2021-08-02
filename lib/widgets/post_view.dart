@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_insta_clone/extensions/extensions.dart';
 import 'package:flutter_insta_clone/models/models.dart';
 import 'package:flutter_insta_clone/screens/home/screens/profile/profile_screen.dart';
+import 'package:flutter_insta_clone/screens/home/screens/screens.dart';
 import 'package:flutter_insta_clone/widgets/user_profile_image.dart';
 
 class PostView extends StatelessWidget {
@@ -61,7 +62,11 @@ class PostView extends StatelessWidget {
               icon: isLiked ? const Icon(Icons.favorite, color: Colors.red) : const Icon(Icons.favorite_outline),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () => Navigator.pushNamed(
+                context,
+                CommentScreen.routeName,
+                arguments: CommentScreenArgs(postModel: postModel),
+              ),
               icon: Icon(Icons.comment),
             ),
           ],

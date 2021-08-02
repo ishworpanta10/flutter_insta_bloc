@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_insta_clone/blocs/blocs.dart';
 import 'package:flutter_insta_clone/cubit/like_cubit/like_post_cubit.dart';
 import 'package:flutter_insta_clone/repositories/repositories.dart';
+import 'package:flutter_insta_clone/screens/home/screens/comment/comment_screen.dart';
 import 'package:flutter_insta_clone/widgets/widgets.dart';
 
 import 'widgets/profile_stats.dart';
@@ -174,7 +175,11 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                           (context, index) {
                             final post = profileState.posts[index];
                             return GestureDetector(
-                              onTap: () {},
+                              onTap: () => Navigator.pushNamed(
+                                context,
+                                CommentScreen.routeName,
+                                arguments: CommentScreenArgs(postModel: post),
+                              ),
                               child: CachedNetworkImage(
                                 imageUrl: post.imageUrl,
                                 fit: BoxFit.cover,
@@ -190,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                             final post = profileState.posts[index];
                             final likedPostState = context.watch<LikePostCubit>().state;
                             final isLiked = likedPostState.likedPostIds.contains(post.id);
-                            print("ISLIKED : $isLiked");
+                            // print("ISLIKED : $isLiked");
                             return PostView(
                               postModel: post,
                               isLiked: isLiked,
