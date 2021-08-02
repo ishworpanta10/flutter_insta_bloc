@@ -43,6 +43,8 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       //we use .empty here because we just want user id for post model
       //auth bloc give use current logged in user id
       final author = UserModel.empty.copyWith(id: _authBloc.state.user.uid);
+      // final model = UserModel(id: _authBloc.state.user.uid); /// i think same as above
+      print("Author Model Ref Data $author ");
       final postImageUrl = await _storageRepo.uploadPostImageAndGiveUrl(image: state.postImage);
       final caption = state.caption;
       final post = PostModel(
