@@ -12,7 +12,7 @@ class PostRepository extends BasePostRepo {
 
   @override
   Future<void> createPost({@required PostModel postModel}) async {
-    final postCollection = FirebaseConstants.post;
+    final postCollection = FirebaseConstants.posts;
     await _firebaseFirestore.collection(postCollection).add(
           postModel.toDocuments(),
         );
@@ -20,7 +20,7 @@ class PostRepository extends BasePostRepo {
 
   @override
   Future<void> createComment({@required CommentModel commentModel}) async {
-    final commentCollection = FirebaseConstants.comment;
+    final commentCollection = FirebaseConstants.comments;
     final postCommentCollection = FirebaseConstants.postComments;
     await _firebaseFirestore.collection(commentCollection).doc(commentModel.postId).collection(postCommentCollection).add(
           commentModel.toDocuments(),
@@ -29,8 +29,8 @@ class PostRepository extends BasePostRepo {
 
   @override
   Stream<List<Future<PostModel>>> getUserPosts({@required String userId}) {
-    final userCollection = FirebaseConstants.user;
-    final postCollection = FirebaseConstants.post;
+    final userCollection = FirebaseConstants.users;
+    final postCollection = FirebaseConstants.posts;
     final authorRef = _firebaseFirestore.collection(userCollection).doc(userId);
     return _firebaseFirestore.collection(postCollection).where('author', isEqualTo: authorRef).orderBy("dateTime", descending: true).snapshots().map(
           (querySnap) => querySnap.docs
@@ -43,7 +43,7 @@ class PostRepository extends BasePostRepo {
 
   @override
   Stream<List<Future<CommentModel>>> getPostComment({@required String postId}) {
-    final commentCollection = FirebaseConstants.comment;
+    final commentCollection = FirebaseConstants.comments;
     final postCommentsSubCollection = FirebaseConstants.postComments;
     return _firebaseFirestore.collection(commentCollection).doc(postId).collection(postCommentsSubCollection).orderBy("dateTime", descending: false).snapshots().map(
           (querySnap) => querySnap.docs
@@ -76,5 +76,44 @@ class PostRepository extends BasePostRepo {
     //here if use does not use future.wait we get only List<Future<PostModel>>
     final futurePostList = Future.wait(postsSnap.docs.map((post) => PostModel.fromDocument(post)).toList());
     return futurePostList;
+  }
+
+  @override
+  void createLike({@required PostModel postModel, @required String userId}) async {
+    final likes = FirebaseConstants.likes;
+    final postLikes = FirebaseConstants.postLikes;
+    final posts = FirebaseConstants.posts;
+    //  updating the post doc with likes
+    //we use here field value because if we use ("likes" : postModel.likes +1 ) it cannot handle concurrent like case
+    _firebaseFirestore.collection(posts).doc(postModel.id).update({"likes": FieldValue.increment(1)});
+    //keeping the userId in postLikes Sub collection of like collection with post id
+    _firebaseFirestore.collection(likes).doc(postModel.id).collection(postLikes).doc(userId).set({});
+  }
+
+  @override
+  void deleteLike({@required String postId, @required String userId}) {
+    final likes = FirebaseConstants.likes;
+    final postLikes = FirebaseConstants.postLikes;
+    final posts = FirebaseConstants.posts;
+    //decrementing the likes from post document
+    _firebaseFirestore.collection(posts).doc(postId).update({"likes": FieldValue.increment(-1)});
+    //deleting userId from postLikes collection
+    _firebaseFirestore.collection(likes).doc(postId).collection(postLikes).doc(userId).delete();
+  }
+
+  @override
+  Future<Set<String>> getLikedPostIds({@required String userId, @required List<PostModel> postModel}) async {
+    //getting all ids of posts which  the user liked
+    final likesCollection = FirebaseConstants.likes;
+    final postLikesCollection = FirebaseConstants.postLikes;
+    final postIds = <String>{};
+    for (final post in postModel) {
+      final likedDoc = await _firebaseFirestore.collection(likesCollection).doc(post.id).collection(postLikesCollection).doc(userId).get();
+      //getting if userId exists in postLikesCollection if so added that is on postIds SET
+      if (likedDoc.exists) {
+        postIds.add(post.id);
+      }
+    }
+    return postIds;
   }
 }

@@ -12,20 +12,20 @@ class UserRepo extends BaseUserRepo {
 
   @override
   Future<UserModel> getUserWithId({@required String userId}) async {
-    final doc = await _firebaseFirestore.collection(FirebaseConstants.user).doc(userId).get();
+    final doc = await _firebaseFirestore.collection(FirebaseConstants.users).doc(userId).get();
     return doc.exists ? UserModel.fromDocument(doc) : UserModel.empty;
   }
 
   @override
   Future<void> updateUser({@required UserModel userModel}) async {
-    await _firebaseFirestore.collection(FirebaseConstants.user).doc(userModel.id).update(
+    await _firebaseFirestore.collection(FirebaseConstants.users).doc(userModel.id).update(
           userModel.toDocument(),
         );
   }
 
   @override
   Future<List<UserModel>> searchUsers({@required String query}) async {
-    final userCollection = FirebaseConstants.user;
+    final userCollection = FirebaseConstants.users;
     final userSnap = await _firebaseFirestore.collection(userCollection).where("username", isGreaterThanOrEqualTo: query).get();
     return userSnap.docs.map((queryDocSnap) => UserModel.fromDocument(queryDocSnap)).toList();
   }

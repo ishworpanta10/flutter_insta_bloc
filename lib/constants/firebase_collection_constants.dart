@@ -1,13 +1,14 @@
 class FirebaseConstants {
   ///Top Level Collections.
-  static const String user = "users";
-  static const String post = "posts";
-  static const String comment = "comments";
+  static const String users = "users";
+  static const String posts = "posts";
+  static const String comments = "comments";
 
   static const String followers = "followers";
   static const String following = "following";
 
   static const String feeds = "feeds";
+  static const String likes = "likes";
 
   /// Sub Collections
   static const String postComments = "postComments";
@@ -16,4 +17,5 @@ class FirebaseConstants {
   static const String userFollowing = "userFollowing";
 
   static const String userFeed = "userFeed";
+  static const String postLikes = "postLikes";
 }
