@@ -29,20 +29,22 @@ class PostRepository extends BasePostRepo {
         );
 
     //  for notification in post comment
-    final notification = NotificationModel(
-      notificationType: NotificationType.comment,
-      fromUser: commentModel.author,
-      postModel: postModel,
-      dateTime: DateTime.now(),
-    );
+    if (postModel.author.id != commentModel.author.id) {
+      final notification = NotificationModel(
+        notificationType: NotificationType.comment,
+        fromUser: commentModel.author,
+        postModel: postModel,
+        dateTime: DateTime.now(),
+      );
 
-    //  adding in firebase firestore notifications collection
-    //  whose post is this and we put their uid in notifications collection
-    final notificationsCol = FirebaseConstants.notifications;
-    final userNotificationsCol = FirebaseConstants.userNotifications;
-    _firebaseFirestore.collection(notificationsCol).doc(postModel.author.id).collection(userNotificationsCol).add(
-          notification.toDocument(),
-        );
+      //  adding in firebase firestore notifications collection
+      //  whose post is this and we put their uid in notifications collection
+      final notificationsCol = FirebaseConstants.notifications;
+      final userNotificationsCol = FirebaseConstants.userNotifications;
+      _firebaseFirestore.collection(notificationsCol).doc(postModel.author.id).collection(userNotificationsCol).add(
+            notification.toDocument(),
+          );
+    }
   }
 
   @override
@@ -108,20 +110,22 @@ class PostRepository extends BasePostRepo {
     _firebaseFirestore.collection(likes).doc(postModel.id).collection(postLikes).doc(userId).set({});
 
     //  for notification in liking post
-    final notification = NotificationModel(
-      notificationType: NotificationType.like,
-      fromUser: UserModel.empty.copyWith(id: userId),
-      postModel: postModel,
-      dateTime: DateTime.now(),
-    );
+    if (postModel.author.id != userId) {
+      final notification = NotificationModel(
+        notificationType: NotificationType.like,
+        fromUser: UserModel.empty.copyWith(id: userId),
+        postModel: postModel,
+        dateTime: DateTime.now(),
+      );
 
-    //  adding in firebase firestore notifications collection
-    //  whose post is this and we put their uid in notifications collection
-    final notificationsCol = FirebaseConstants.notifications;
-    final userNotificationsCol = FirebaseConstants.userNotifications;
-    _firebaseFirestore.collection(notificationsCol).doc(postModel.author.id).collection(userNotificationsCol).add(
-          notification.toDocument(),
-        );
+      //  adding in firebase firestore notifications collection
+      //  whose post is this and we put their uid in notifications collection
+      final notificationsCol = FirebaseConstants.notifications;
+      final userNotificationsCol = FirebaseConstants.userNotifications;
+      _firebaseFirestore.collection(notificationsCol).doc(postModel.author.id).collection(userNotificationsCol).add(
+            notification.toDocument(),
+          );
+    }
   }
 
   @override

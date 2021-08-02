@@ -19,12 +19,19 @@ class NotificationTile extends StatelessWidget {
     return ListTile(
       onTap: () => Navigator.pushNamed(
         context,
-        ProfileScreen.routeName,
-        arguments: ProfileScreenArgs(userId: notificationModel.fromUser.id),
+        CommentScreen.routeName,
+        arguments: CommentScreenArgs(postModel: notificationModel.postModel),
       ),
-      leading: UserProfileImage(
-        radius: 18,
-        profileImageURl: notificationModel.fromUser.imageUrl,
+      leading: GestureDetector(
+        onTap: () => Navigator.pushNamed(
+          context,
+          ProfileScreen.routeName,
+          arguments: ProfileScreenArgs(userId: notificationModel.fromUser.id),
+        ),
+        child: UserProfileImage(
+          radius: 18,
+          profileImageURl: notificationModel.fromUser.imageUrl,
+        ),
       ),
       title: Text.rich(
         TextSpan(
