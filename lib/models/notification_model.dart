@@ -38,7 +38,6 @@ class NotificationModel extends Equatable {
     if (doc == null) {
       return null;
     }
-    final _firebaseInstance = FirebaseFirestore.instance;
     final data = doc.data();
     final notificationEnumType = EnumToString.fromString(NotificationType.values, data["NotificationType"]);
     final fromUserDocRef = data["fromUser"] as DocumentReference;
@@ -67,6 +66,7 @@ class NotificationModel extends Equatable {
         }
       }
     }
+    return null;
   }
 
   NotificationModel copyWith({

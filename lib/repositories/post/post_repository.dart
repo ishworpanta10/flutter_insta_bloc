@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_insta_clone/constants/firebase_collection_constants.dart';
+import 'package:flutter_insta_clone/enums/notification_type.dart';
 import 'package:flutter_insta_clone/models/comment_model.dart';
+import 'package:flutter_insta_clone/models/models.dart';
 import 'package:flutter_insta_clone/models/post_model.dart';
 import 'package:flutter_insta_clone/repositories/post/base_post_repository.dart';
 
@@ -19,11 +21,27 @@ class PostRepository extends BasePostRepo {
   }
 
   @override
-  Future<void> createComment({@required CommentModel commentModel}) async {
+  Future<void> createComment({@required PostModel postModel, @required CommentModel commentModel}) async {
     final commentCollection = FirebaseConstants.comments;
     final postCommentCollection = FirebaseConstants.postComments;
     await _firebaseFirestore.collection(commentCollection).doc(commentModel.postId).collection(postCommentCollection).add(
           commentModel.toDocuments(),
+        );
+
+    //  for notification in post comment
+    final notification = NotificationModel(
+      notificationType: NotificationType.comment,
+      fromUser: commentModel.author,
+      postModel: postModel,
+      dateTime: DateTime.now(),
+    );
+
+    //  adding in firebase firestore notifications collection
+    //  whose post is this and we put their uid in notifications collection
+    final notificationsCol = FirebaseConstants.notifications;
+    final userNotificationsCol = FirebaseConstants.userNotifications;
+    _firebaseFirestore.collection(notificationsCol).doc(postModel.author.id).collection(userNotificationsCol).add(
+          notification.toDocument(),
         );
   }
 
@@ -88,6 +106,22 @@ class PostRepository extends BasePostRepo {
     _firebaseFirestore.collection(posts).doc(postModel.id).update({"likes": FieldValue.increment(1)});
     //keeping the userId in postLikes Sub collection of like collection with post id
     _firebaseFirestore.collection(likes).doc(postModel.id).collection(postLikes).doc(userId).set({});
+
+    //  for notification in liking post
+    final notification = NotificationModel(
+      notificationType: NotificationType.like,
+      fromUser: UserModel.empty.copyWith(id: userId),
+      postModel: postModel,
+      dateTime: DateTime.now(),
+    );
+
+    //  adding in firebase firestore notifications collection
+    //  whose post is this and we put their uid in notifications collection
+    final notificationsCol = FirebaseConstants.notifications;
+    final userNotificationsCol = FirebaseConstants.userNotifications;
+    _firebaseFirestore.collection(notificationsCol).doc(postModel.author.id).collection(userNotificationsCol).add(
+          notification.toDocument(),
+        );
   }
 
   @override

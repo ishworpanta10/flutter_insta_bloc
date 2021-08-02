@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_insta_clone/constants/firebase_collection_constants.dart';
+import 'package:flutter_insta_clone/enums/notification_type.dart';
 import 'package:flutter_insta_clone/models/models.dart';
 import 'package:flutter_insta_clone/models/user_model.dart';
 import 'package:flutter_insta_clone/repositories/repositories.dart';
@@ -42,6 +43,21 @@ class UserRepo extends BaseUserRepo {
 
     /// add current user to followUser's userFollowers.
     _firebaseFirestore.collection(followers).doc(followUserId).collection(userFollowers).doc(userId).set({});
+
+    //  for notification in following user
+    final notification = NotificationModel(
+      notificationType: NotificationType.follow,
+      fromUser: UserModel.empty.copyWith(id: userId),
+      dateTime: DateTime.now(),
+    );
+
+    //  adding in firebase firestore notifications collection
+    //  whose id is this and we put their uid in notifications collection
+    final notificationsCol = FirebaseConstants.notifications;
+    final userNotificationsCol = FirebaseConstants.userNotifications;
+    _firebaseFirestore.collection(notificationsCol).doc(followUserId).collection(userNotificationsCol).add(
+          notification.toDocument(),
+        );
   }
 
   @override
@@ -56,6 +72,21 @@ class UserRepo extends BaseUserRepo {
 
     /// remove user from unfollowUser's usersFollowers.
     _firebaseFirestore.collection(followers).doc(unfollowUserId).collection(userFollowers).doc(userId).delete();
+
+    //  for notification in following user
+    final notification = NotificationModel(
+      notificationType: NotificationType.unfollow,
+      fromUser: UserModel.empty.copyWith(id: userId),
+      dateTime: DateTime.now(),
+    );
+
+    //  adding in firebase firestore notifications collection
+    //  whose id is this and we put their uid in notifications collection
+    final notificationsCol = FirebaseConstants.notifications;
+    final userNotificationsCol = FirebaseConstants.userNotifications;
+    _firebaseFirestore.collection(notificationsCol).doc(unfollowUserId).collection(userNotificationsCol).add(
+          notification.toDocument(),
+        );
   }
 
   @override

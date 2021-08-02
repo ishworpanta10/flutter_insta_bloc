@@ -1,1 +1,1 @@
-enum NotificationType { like, comment, follow }
+enum NotificationType { like, comment, follow, unfollow }

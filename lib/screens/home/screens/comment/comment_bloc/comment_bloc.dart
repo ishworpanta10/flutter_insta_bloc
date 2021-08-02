@@ -100,7 +100,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         author: authorId,
         dateTime: DateTime.now(),
       );
-      await _postRepository.createComment(commentModel: comment);
+      await _postRepository.createComment(postModel: state.postModel, commentModel: comment);
       yield state.copyWith(
         status: CommentStatus.loaded,
       );
