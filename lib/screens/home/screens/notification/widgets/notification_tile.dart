@@ -67,7 +67,10 @@ class NotificationTile extends StatelessWidget {
         return 'commented your post.';
 
       case NotificationType.follow:
-        return 'followed post.';
+        return 'follows you.';
+
+      case NotificationType.unfollow:
+        return 'unfollow you.';
 
       default:
         return "";

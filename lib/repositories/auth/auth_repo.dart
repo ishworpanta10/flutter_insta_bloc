@@ -37,10 +37,10 @@ class AuthRepo extends BaseAuthRepo {
       });
       return user;
     } on auth.FirebaseAuthException catch (err) {
-      debugPrint('Error During SignUp in FirebaseAuth : ${err.message}');
+      // debugPrint('Error During SignUp in FirebaseAuth : ${err.message}');
       throw Failure(code: err.code, message: err.message);
     } on PlatformException catch (err) {
-      debugPrint('Error During SignUp in Platform : ${err.message}');
+      // debugPrint('Error During SignUp in Platform : ${err.message}');
       throw Failure(code: err.code, message: err.message);
     }
   }
@@ -57,10 +57,10 @@ class AuthRepo extends BaseAuthRepo {
       );
       return credential.user;
     } on auth.FirebaseAuthException catch (err) {
-      debugPrint('Error During Login in FirebaseAuth ${err.message}');
+      // debugPrint('Error During Login in FirebaseAuth ${err.message}');
       throw Failure(code: err.code, message: err.message);
     } on PlatformException catch (err) {
-      debugPrint('Error During Login in Platform ${err.message}');
+      // debugPrint('Error During Login in Platform ${err.message}');
       throw Failure(code: err.code, message: err.message);
     }
   }

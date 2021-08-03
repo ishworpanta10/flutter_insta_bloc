@@ -20,6 +20,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     _notificationSubscription?.cancel();
     _notificationSubscription = _notificationRepo.getUserNotifications(userId: _authBloc.state.user.uid).listen((notifications) async {
       final allNotification = await Future.wait(notifications);
+      // print("allNotification : $allNotification");
       add(
         UpdateNotificationsEvent(notificationList: allNotification),
       );

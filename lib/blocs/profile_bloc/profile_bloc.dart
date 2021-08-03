@@ -88,13 +88,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         status: ProfileStatus.loaded,
       );
     } on FirebaseException catch (e) {
-      print("Firebase Error: ${e.message}");
+      // print("Firebase Error: ${e.message}");
       yield state.copyWith(
         status: ProfileStatus.failure,
         failure: const Failure(message: "Unable to load this profile"),
       );
     } catch (e) {
-      print("Something Unknown Error: $e");
+      // print("Something Unknown Error: $e");
       yield state.copyWith(
         status: ProfileStatus.failure,
         failure: const Failure(message: "Unable to load this profile"),
@@ -118,15 +118,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Stream<ProfileState> _mapProfileFollowUserEventToState(ProfileFollowUserEvent event) async* {
     try {
+      // print("_auth Id ${_authBloc.state.user.uid}, UserModel id ${state.userModel.id}");
       _userRepo.followUser(userId: _authBloc.state.user.uid, followUserId: state.userModel.id);
       //this increment is not just for ui we use cloud function to update db
       final updatedUser = state.userModel.copyWith(followers: state.userModel.followers + 1);
+      // print("Updated users $updatedUser");
       yield state.copyWith(userModel: updatedUser, isFollowing: true);
     } on FirebaseException catch (e) {
-      print("Firebase Error: ${e.message}");
+      // print("Firebase Error: ${e.message}");
       yield state.copyWith(status: ProfileStatus.failure, failure: Failure(message: e.message));
     } catch (e) {
-      print("Something Unknown Error: $e");
+      // print("Something Unknown Error: $e");
       yield state.copyWith(status: ProfileStatus.failure, failure: Failure(message: "something went wrong! Please try again "));
     }
   }
@@ -138,10 +140,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final updatedUser = state.userModel.copyWith(followers: state.userModel.followers - 1);
       yield state.copyWith(userModel: updatedUser, isFollowing: false);
     } on FirebaseException catch (e) {
-      print("Firebase Error: ${e.message}");
+      // print("Firebase Error: ${e.message}");
       yield state.copyWith(status: ProfileStatus.failure, failure: Failure(message: e.message));
     } catch (e) {
-      print("Something Unknown Error: $e");
+      // print("Something Unknown Error: $e");
       yield state.copyWith(status: ProfileStatus.failure, failure: Failure(message: "something went wrong! Please try again "));
     }
   }

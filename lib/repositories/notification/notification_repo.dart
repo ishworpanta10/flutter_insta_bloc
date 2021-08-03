@@ -16,8 +16,13 @@ class NotificationRepo extends BaseNotificationRepo {
     final notification = FirebaseConstants.notifications;
     final userNotifications = FirebaseConstants.userNotifications;
     final snapshots = _firebaseFirestore.collection(notification).doc(userId).collection(userNotifications).orderBy("dateTime", descending: true).snapshots();
+    // print("snapshots $snapshots");
+
     return snapshots.map(
-      (querySnaps) => querySnaps.docs.map((queryDocSnap) => NotificationModel.fromDocument(queryDocSnap)).toList(),
+      (querySnaps) => querySnaps.docs.map((queryDocSnap) {
+        // print("queryDocSnap $queryDocSnap");
+        return NotificationModel.fromDocument(queryDocSnap);
+      }).toList(),
     );
   }
 }

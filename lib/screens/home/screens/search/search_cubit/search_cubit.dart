@@ -20,7 +20,7 @@ class SearchCubit extends Cubit<SearchState> {
         state.copyWith(userList: userList, status: SearchStatus.loaded),
       );
     } catch (err) {
-      print("Error during search ${err.toString()}");
+      // print("Error during search ${err.toString()}");
       emit(state.copyWith(status: SearchStatus.error, failure: Failure(message: "something went wrong, please try again.")));
     }
   }

@@ -33,19 +33,12 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  final List<String> languageList = [
-    "English (United Kingdom) ",
-    "Espanol",
-    "Hindi",
-    "Deutsch"
-  ];
+  final List<String> languageList = ["English (United Kingdom) ", "Espanol", "Hindi", "Deutsch"];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _usernameTextEditingController =
-      TextEditingController();
-  final TextEditingController _passwordTextEditingController =
-      TextEditingController();
+  final TextEditingController _usernameTextEditingController = TextEditingController();
+  final TextEditingController _passwordTextEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -113,8 +106,7 @@ class LoginScreen extends StatelessWidget {
                           sbH40,
                           _buildFormFields(context),
                           sbH20,
-                          _buildLogInBtn(context,
-                              loginState.status == LoginStatus.progress),
+                          _buildLogInBtn(context, loginState.status == LoginStatus.progress),
                           sbH10,
                           _buildForgetPasswordRichText(context),
                           sbH10,
@@ -145,7 +137,7 @@ class LoginScreen extends StatelessWidget {
   Widget _buildContinueWithFacebook(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print("Continue with facebook");
+        // print("Continue with facebook");
       },
       child: Container(
         color: Colors.grey[50],
@@ -162,7 +154,7 @@ class LoginScreen extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                print("Continue with facebook");
+                // print("Continue with facebook");
               },
               style: ButtonStyle(
                 overlayColor: MaterialStateColor.resolveWith(
@@ -197,11 +189,7 @@ class LoginScreen extends StatelessWidget {
         Text(
           "OR",
           style: Theme.of(context).textTheme.subtitle2.copyWith(
-                color: Theme.of(context)
-                    .textTheme
-                    .subtitle2
-                    .color
-                    .withOpacity(0.5),
+                color: Theme.of(context).textTheme.subtitle2.color.withOpacity(0.5),
               ),
         ),
         SizedBox(
@@ -286,8 +274,7 @@ class LoginScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   primary: Colors.blue,
                   onPrimary: Colors.white,
-                  onSurface:
-                      !(emailState && passwordState) ? Colors.blue : null,
+                  onSurface: !(emailState && passwordState) ? Colors.blue : null,
                   padding: EdgeInsets.symmetric(vertical: 14.0),
                 ),
                 // style: ButtonStyle(),
@@ -331,10 +318,7 @@ class LoginScreen extends StatelessWidget {
           TextFormField(
             controller: _usernameTextEditingController,
             validator: (value) {
-              if (value.isEmpty ||
-                  value == null ||
-                  value.length < 3 ||
-                  !value.contains("@")) {
+              if (value.isEmpty || value == null || value.length < 3 || !value.contains("@")) {
                 return "Invalid username/email";
               } else
                 return null;
@@ -372,8 +356,7 @@ class LoginScreen extends StatelessWidget {
                       color: passwordState ? Colors.grey : null,
                     ),
                     onPressed: () {
-                      BlocProvider.of<PasswordShowHideToggleBtn>(context)
-                          .add(!passwordState);
+                      BlocProvider.of<PasswordShowHideToggleBtn>(context).add(!passwordState);
                     },
                   ),
                 ),
@@ -409,7 +392,7 @@ class LoginScreen extends StatelessWidget {
               value: currentGender,
               onChanged: (value) {
                 BlocProvider.of<LanguageChangingBloc>(context).add(value);
-                print("Selected Gender :" + value);
+                // print("Selected Gender :" + value);
               },
               items: languageList
                   .map<DropdownMenuItem<String>>(

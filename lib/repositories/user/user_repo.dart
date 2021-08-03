@@ -51,6 +51,9 @@ class UserRepo extends BaseUserRepo {
       dateTime: DateTime.now(),
     );
 
+    // print("Notification : $notification");
+    // print("followUserId : $followUserId");
+
     //  adding in firebase firestore notifications collection
     //  whose id is this and we put their uid in notifications collection
     final notificationsCol = FirebaseConstants.notifications;
@@ -99,5 +102,17 @@ class UserRepo extends BaseUserRepo {
     /// is otherUser in user's userFollowing
     final otherUserDoc = await _firebaseFirestore.collection(following).doc(userId).collection(userFollowing).doc(otherUserId).get();
     return otherUserDoc.exists;
+  }
+
+  @override
+  Stream<List<UserModel>> getAllFirebaseUsers() {
+    final users = FirebaseConstants.users;
+    return _firebaseFirestore.collection(users).snapshots().map(
+          (querySnap) => querySnap.docs
+              .map(
+                (queryDocSnap) => UserModel.fromDocument(queryDocSnap),
+              )
+              .toList(),
+        );
   }
 }

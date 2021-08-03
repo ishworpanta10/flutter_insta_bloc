@@ -80,30 +80,44 @@ class _FeedScreenState extends State<FeedScreen> {
             context.read<FeedBloc>().add(FeedFetchPostsEvent());
             return true;
           },
-          child: ListView.builder(
-            controller: _scrollController,
-            physics: const BouncingScrollPhysics(),
-            itemCount: feedState.postList.length,
-            itemBuilder: (context, index) {
-              final post = feedState.postList[index];
-              final likedPostState = context.watch<LikePostCubit>().state;
-              final isLiked = likedPostState.likedPostIds.contains(post.id);
-              final recentlyLiked = likedPostState.recentlyLikedPostsIds.contains(post.id);
-              return PostView(
-                postModel: post,
-                isLiked: isLiked,
-                recentlyLiked: recentlyLiked,
-                onLike: () {
-                  if (isLiked) {
-                    context.read<LikePostCubit>().unLikePost(postModel: post);
-                  } else {
-                    context.read<LikePostCubit>().likePost(postModel: post);
-                  }
-                },
-              );
-            },
+          child: Column(
+            children: [
+              _buildShowFirebaseUsers(),
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: feedState.postList.length,
+                  itemBuilder: (context, index) {
+                    final post = feedState.postList[index];
+                    final likedPostState = context.watch<LikePostCubit>().state;
+                    final isLiked = likedPostState.likedPostIds.contains(post.id);
+                    final recentlyLiked = likedPostState.recentlyLikedPostsIds.contains(post.id);
+                    return PostView(
+                      postModel: post,
+                      isLiked: isLiked,
+                      recentlyLiked: recentlyLiked,
+                      onLike: () {
+                        if (isLiked) {
+                          context.read<LikePostCubit>().unLikePost(postModel: post);
+                        } else {
+                          context.read<LikePostCubit>().likePost(postModel: post);
+                        }
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         );
     }
+  }
+
+  Widget _buildShowFirebaseUsers() {
+    return Container(
+      height: 100,
+      color: Colors.green,
+    );
   }
 }

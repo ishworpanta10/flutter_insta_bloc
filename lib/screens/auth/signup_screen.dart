@@ -6,7 +6,7 @@ import 'package:flutter_insta_clone/blocs/basic_ui_bloc/password_change_bloc.dar
 import 'package:flutter_insta_clone/constants/const_size_boxes.dart';
 import 'package:flutter_insta_clone/cubit/signup_cubit/signup_cubit.dart';
 import 'package:flutter_insta_clone/repositories/auth/auth_repo.dart';
-import 'package:flutter_insta_clone/screens/home/homepage.dart';
+import 'package:flutter_insta_clone/screens/home/screens/nav/navbar.dart';
 import 'package:flutter_insta_clone/styles/decorations/custom_decoration.dart';
 import 'package:flutter_insta_clone/widgets/error_dialog.dart';
 import 'package:flutter_insta_clone/widgets/loading_dialog.dart';
@@ -69,7 +69,7 @@ class SignUpScreen extends StatelessWidget {
               });
         } else if (signupState.status == SignupStatus.success) {
           BotToast.closeAllLoading();
-          Navigator.pushReplacementNamed(context, HomePage.routeName);
+          Navigator.pushReplacementNamed(context, NavBar.routeName);
           BotToast.showText(text: "Signup Success");
         }
         // else if (signupState.status == SignupStatus.initial) {}
@@ -103,7 +103,7 @@ class SignUpScreen extends StatelessWidget {
 
   Widget _buildLogInBtn(BuildContext context, bool isSubmitting) {
     return BlocBuilder<UserNameChangeBloc, bool>(
-      builder: (context, userNamestate) {
+      builder: (context, userNameState) {
         return BlocBuilder<EmailChangeBloc, bool>(
           builder: (context, emailState) {
             return BlocBuilder<PasswordChangeBloc, bool>(
@@ -114,14 +114,14 @@ class SignUpScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         primary: Colors.blue,
                         onPrimary: Colors.white,
-                        onSurface: !(emailState && passwordState && userNamestate) ? Colors.blue : null,
+                        onSurface: !(emailState && passwordState && userNameState) ? Colors.blue : null,
                         padding: EdgeInsets.symmetric(vertical: 14.0),
                       ),
                       // style: ButtonStyle(),
                       child: Text(
                         "Sign Up",
                       ),
-                      onPressed: !(emailState && passwordState && userNamestate)
+                      onPressed: !(emailState && passwordState && userNameState)
                           ? null
                           : () {
                               if (_formKey.currentState.validate() && !isSubmitting) {

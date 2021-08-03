@@ -25,7 +25,8 @@ class NotificationModel extends Equatable {
     final _firebaseInstance = FirebaseFirestore.instance;
     final notificationEnumType = EnumToString.convertToString(notificationType);
     final fromUserDocRef = _firebaseInstance.collection(FirebaseConstants.users).doc(fromUser.id);
-    final postDocRef = _firebaseInstance.collection(FirebaseConstants.posts).doc(postModel.id);
+    final postDocRef = _firebaseInstance.collection(FirebaseConstants.posts).doc(postModel?.id);
+    // print("post Doc Ref $postDocRef");
     return {
       'NotificationType': notificationEnumType,
       'fromUser': fromUserDocRef,
@@ -42,11 +43,14 @@ class NotificationModel extends Equatable {
     final notificationEnumType = EnumToString.fromString(NotificationType.values, data["NotificationType"]);
     final fromUserDocRef = data["fromUser"] as DocumentReference;
     final postDocRef = data["post"] as DocumentReference;
+
+    // print("User Ref ${data["post"]}");
     if (fromUserDocRef != null) {
       final fromUserDoc = await fromUserDocRef.get();
       if (postDocRef != null) {
         final postDoc = await postDocRef.get();
         if (postDoc.exists) {
+          // print("User Ref Post ${data["fromUser"]}");
           return NotificationModel(
             id: doc.id,
             notificationType: notificationEnumType,
@@ -56,14 +60,12 @@ class NotificationModel extends Equatable {
           );
         }
       } else {
-        if (fromUserDoc.exists) {
-          return NotificationModel(
-            id: doc.id,
-            notificationType: notificationEnumType,
-            fromUser: UserModel.fromDocument(fromUserDoc),
-            dateTime: (data["dateTime"] as Timestamp)?.toDate(),
-          );
-        }
+        return NotificationModel(
+          id: doc.id,
+          notificationType: notificationEnumType,
+          fromUser: UserModel.fromDocument(fromUserDoc),
+          dateTime: (data["dateTime"] as Timestamp)?.toDate(),
+        );
       }
     }
     return null;

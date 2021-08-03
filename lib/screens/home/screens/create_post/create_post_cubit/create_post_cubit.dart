@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_insta_clone/blocs/auth_bloc/auth_bloc.dart';
 import 'package:flutter_insta_clone/models/failure_model.dart';
 import 'package:flutter_insta_clone/models/models.dart';
@@ -44,7 +43,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       //auth bloc give use current logged in user id
       final author = UserModel.empty.copyWith(id: _authBloc.state.user.uid);
       // final model = UserModel(id: _authBloc.state.user.uid); /// i think same as above
-      print("Author Model Ref Data $author ");
+      // print("Author Model Ref Data $author ");
       final postImageUrl = await _storageRepo.uploadPostImageAndGiveUrl(image: state.postImage);
       final caption = state.caption;
       final post = PostModel(
@@ -58,7 +57,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
       _postRepository.createPost(postModel: post);
       emit(state.copyWith(status: CreatePostStatus.success));
     } catch (err) {
-      debugPrint("Error during post submit ${err.toString()}");
+      // debugPrint("Error during post submit ${err.toString()}");
       emit(
         state.copyWith(
           status: CreatePostStatus.failure,
