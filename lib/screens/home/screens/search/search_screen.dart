@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_insta_clone/models/models.dart';
+import 'package:flutter_insta_clone/repositories/repositories.dart';
 import 'package:flutter_insta_clone/screens/home/screens/profile/profile_screen.dart';
 import 'package:flutter_insta_clone/screens/home/screens/search/search_cubit/search_cubit.dart';
 import 'package:flutter_insta_clone/widgets/centered_text.dart';
 import 'package:flutter_insta_clone/widgets/user_profile_image.dart';
+import 'package:flutter_insta_clone/widgets/widgets.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -80,10 +83,62 @@ class _SearchScreenState extends State<SearchScreen> {
                     : CenteredText(text: 'no user found');
 
               default:
-                return SizedBox.shrink();
+                return _buildShowFirebaseUsers();
             }
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildShowFirebaseUsers() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+      // color: Colors.green,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Suggestions for You',
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                ),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  'See All',
+                  style: const TextStyle(fontSize: 15, color: Colors.blue),
+                ),
+              )
+            ],
+          ),
+          StreamBuilder<List<UserModel>>(
+              stream: UserRepo().getAllFirebaseUsers(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final userList = snapshot.data;
+                  return Container(
+                    height: 160,
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(right: 10),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: userList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final user = userList[index];
+                        return SuggestionTile(user: user);
+                      },
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Icon(Icons.error_outline);
+                } else {
+                  return CircularProgressIndicator();
+                }
+              })
+        ],
       ),
     );
   }

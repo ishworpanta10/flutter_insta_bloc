@@ -82,11 +82,9 @@ class _FeedScreenState extends State<FeedScreen> {
             context.read<FeedBloc>().add(FeedFetchPostsEvent());
             return true;
           },
-          child: Column(
-            children: [
-              _buildShowFirebaseUsers(),
-              Expanded(
-                child: ListView.builder(
+          child: feedState.postList.isEmpty && feedState.status == FeedStatus.loaded
+              ? _buildShowFirebaseUsers()
+              : ListView.builder(
                   controller: _scrollController,
                   physics: const BouncingScrollPhysics(),
                   itemCount: feedState.postList.length,
@@ -109,9 +107,6 @@ class _FeedScreenState extends State<FeedScreen> {
                     );
                   },
                 ),
-              ),
-            ],
-          ),
         );
     }
   }
