@@ -91,7 +91,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       // print("Firebase Error: ${e.message}");
       yield state.copyWith(
         status: ProfileStatus.failure,
-        failure: const Failure(message: "Unable to load this profile"),
+        failure: Failure(message: "${e.message}"),
       );
     } catch (e) {
       // print("Something Unknown Error: $e");
