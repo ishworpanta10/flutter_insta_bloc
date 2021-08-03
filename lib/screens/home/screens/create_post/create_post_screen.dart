@@ -34,6 +34,7 @@ class CreatePostScreen extends StatelessWidget {
             } else if (createPostState.status == CreatePostStatus.submitting) {
               showDialog(
                 context: context,
+                barrierDismissible: false,
                 builder: (context) => LoadingDialog(
                   loadingMessage: 'Creating Post',
                 ),

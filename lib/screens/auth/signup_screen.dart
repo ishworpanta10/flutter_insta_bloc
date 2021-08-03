@@ -179,6 +179,7 @@ class SignUpScreen extends StatelessWidget {
                 hintText: "Username",
                 hintStyle: Theme.of(context).textTheme.caption,
               ),
+              textCapitalization: TextCapitalization.words,
               onChanged: (username) {
                 BlocProvider.of<UserNameChangeBloc>(context).add(username);
                 BlocProvider.of<SignupCubit>(context).usernameChanged(username);

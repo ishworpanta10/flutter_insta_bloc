@@ -39,6 +39,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   },
                   icon: const Icon(Icons.clear)),
             ),
+            textCapitalization: TextCapitalization.words,
             textInputAction: TextInputAction.search,
             textAlignVertical: TextAlignVertical.center,
             onChanged: (value) {

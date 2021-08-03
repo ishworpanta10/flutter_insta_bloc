@@ -99,6 +99,7 @@ class EditProfile extends StatelessWidget {
                             TextFormField(
                               initialValue: userModel.username,
                               decoration: InputDecoration(hintText: 'username'),
+                              textCapitalization: TextCapitalization.words,
                               onChanged: (value) {
                                 context.read<EditProfileCubit>().usernameChanged(value);
                               },

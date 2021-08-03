@@ -17,10 +17,10 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => Navigator.pushNamed(
+      onTap: () =>  Navigator.pushNamed(
         context,
-        CommentScreen.routeName,
-        arguments: CommentScreenArgs(postModel: notificationModel.postModel),
+        ProfileScreen.routeName,
+        arguments: ProfileScreenArgs(userId: notificationModel.fromUser.id),
       ),
       leading: GestureDetector(
         onTap: () => Navigator.pushNamed(
