@@ -1,6 +1,6 @@
 # flutter_insta_clone
 
-## Used Cloud Firestore, Firebase firestore nnd cloud functions
+## Used Cloud Firestore, Firebase firestore and cloud functions
 
 
 ## Screenshots
